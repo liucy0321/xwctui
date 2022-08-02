@@ -2,7 +2,7 @@
 
 ## 使用 React+typescript+antd 二次封装扩展 antd 组件库
 
-[![Build Status](https://travis-ci.com/vikingmute/vikingship.svg?token=mHoDqxyxXWX5BSpu8L9y&branch=master)](https://travis-ci.com/vikingmute/vikingship)
+组件库 git 地址：https://github.com/liucy0321/xwctui.git
 
 xwctui 是为彩兔装企系统打造的一套业务流程组件库，使用 React Hooks 和 typescript 二次封装 antd 组件库
 ，贴合业务代码与功能，根据业务自定义扩展组件功能。

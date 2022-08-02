@@ -6,7 +6,7 @@ const config = {
   ...basicConfig,
   output: [
     {
-      name: 'Vikingship',
+      name: 'Xwctui',
       file: 'dist/index.umd.js',
       format: 'umd',
       exports: 'named',
