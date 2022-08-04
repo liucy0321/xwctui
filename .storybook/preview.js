@@ -13,7 +13,7 @@ export const parameters = {
   viewMode: 'docs',
   options: {
     storySort: {
-      order: ['Welcome', 'Button', 'Alert 组件', 'Menu', 'Tabs', 'Icon 组件', 'Input', 'AutoComplete 组件', 'Select', 'Upload'], 
+      order: ['Welcome', 'Button', 'Table', 'Menu', 'Tabs', 'Icon 组件', 'Input', 'AutoComplete 组件', 'Select', 'Upload'], 
     },
   },
 }

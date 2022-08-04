@@ -6,10 +6,10 @@ library.add(fas);
 
 export { default as Button } from "./components/Button";
 export { default as Select } from "./components/Select";
+export { default as Table } from "./components/Table";
 export type { SelectProps } from "antd/lib/select";
 export type { ColumnsType } from "antd/lib/table";
 export {
-  Table,
   Input,
   Form,
   Checkbox,
