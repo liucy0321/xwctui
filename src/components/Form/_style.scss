@@ -1,0 +1,182 @@
+.xwct-form {
+  min-width: 800px;
+  .ant-form-item:focus-within .ant-form-item-row {
+    border-color: $_color_primary;
+  }
+  .ant-form-item-has-error .ant-form-item-row {
+    border-color: red !important;
+  }
+  // 无边框-->采用小边框
+  .form-item-noborder {
+    .ant-form-item-row {
+      border: none !important;
+    }
+    .ant-form-item-control {
+      border: 1px solid $_color_system;
+      border-radius: 4px;
+    }
+    .ant-form-item-row:focus-within .ant-form-item-control,
+    .ant-form-item-row:hover .ant-form-item-control {
+      border-color: $_color_primary;
+    }
+  }
+  // 无边框并且必填
+  .form-item-noborder.ant-form-item-has-error {
+    .ant-form-item-control {
+      border-color: red !important;
+    }
+  }
+  // 无lable头部
+  .form-item-noLabel {
+    .ant-form-item-label {
+      display: none;
+    }
+  }
+  // 无边框时并且禁用label
+  .form-item-noborder.form-item-disabled {
+    .ant-form-item-label,
+    .ant-form-item-row,
+    .label {
+      background: transparent !important;
+    }
+    .ant-form-item-label {
+      cursor: auto;
+    }
+    .ant-form-item-control {
+      border-color: $_color_system !important;
+    }
+  }
+  // 禁用样式
+  .form-item-disabled {
+    .ant-form-item-row {
+      cursor: not-allowed;
+      border-color: $_color_system !important;
+      .ant-form-item-required {
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+    .ant-form-item-label,
+    .ant-form-item-row,
+    .ant-form-item-control,
+    input {
+      background-color: #f5f5f5 !important;
+    }
+    .label,
+    input {
+      pointer-events: none;
+    }
+  }
+  .ant-form-item-control > div:nth-child(2) > div {
+    display: none !important;
+  }
+  // 重写formItem样式
+  .ant-form-item {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0 10px 10px 0;
+    color: rgba(0, 0, 0, 0.85);
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    min-height: 30px;
+    list-style: none;
+    font-feature-settings: "tnum", "tnum";
+    vertical-align: top;
+    display: flex;
+    flex-flow: row wrap;
+    border-radius: 4px;
+    float: left;
+    // div {
+    //   height: inherit;
+    // }
+    .ant-form-item-row:hover {
+      border-color: $_color_primary;
+    }
+    .ant-form-item-row {
+      width: 100%;
+      border: 1px solid $_color_system;
+      border-radius: 4px;
+      height: 100%;
+      min-height: 32px;
+    }
+    .ant-form-item-control-input {
+      min-height: 30px;
+    }
+    .ant-form-item-label {
+      color: #768696;
+      border-radius: 4px 0px 0px 4px;
+      padding-left: 6px;
+      transition: border 0.3s;
+      background-color: #ffffff;
+      label {
+        height: 30px;
+      }
+    }
+    input,
+    label,
+    span {
+      font-size: 12px !important;
+    }
+    .ant-form-item-control {
+      flex: 1 1;
+      display: flex;
+      flex-direction: column;
+      // 去边框
+      input,
+      textarea,
+      .ant-picker,
+      .ant-select-selector {
+        border: none;
+        width: 100%;
+        border-radius: 4px !important;
+      }
+      textarea {
+        resize: none;
+      }
+      .ant-select-selector,
+      .ant-select-selector:checked,
+      .ant-input:focus,
+      .ant-picker-focused,
+      .ant-select-focused,
+      .ant-input-group-addon,
+      .ant-input-affix-wrapper {
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .ant-input-affix-wrapper,
+      .ant-input-group > .ant-input,
+      .ant-select-selector {
+        height: 30px;
+      }
+      .ant-input-group > div:first-of-type {
+        border-right: 1px solid $_color_system !important;
+        border-radius: 4px 0 0 4px !important;
+        margin-right: 1px;
+        width: calc(30% - 1px);
+      }
+      .ant-input-group > .ant-input-affix-wrapper {
+        border-radius: 0 4px 4px 0 !important;
+      }
+    }
+    .ant-picker-input > input {
+      text-align: center;
+    }
+  }
+  .search-left {
+    float: left;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex: 1 1;
+    position: relative;
+  }
+  .search-right {
+    display: flex;
+    justify-content: flex-end;
+    width: 150px;
+    text-align: center;
+    .ant-btn-primary {
+      margin-right: 10px;
+    }
+  }
+}

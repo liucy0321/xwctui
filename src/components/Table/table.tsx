@@ -1,8 +1,7 @@
 import React, { FC } from "react";
-import { TableProps, Table as AntTable } from "antd";
+import { TableProps, Table as AntTable, Empty } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { TableSummary } from "./tableSummary";
-import { Footer } from "antd/lib/layout/layout";
 // 选择
 export interface ISelectContext {
   onSelect?: (value: string, isSelected?: boolean) => void;
@@ -65,17 +64,24 @@ export interface IProps<RecordType>
 export const Table: FC<IProps<any>> = (props) => {
   const { children, summaryConfig, columns, ...restProps } = props;
   let className = "xwct-table";
+  // 动态表头配置
   return (
     <AntTable
       bordered
       columns={columns}
       className={className}
-      scroll={{ x: 1000, y: 200 }}
+      scroll={{ x: 1000, y: 500 }}
+      pagination={false}
       summary={() => (
         <AntTable.Summary fixed>
           <TableSummary columns={columns} summaryConfig={summaryConfig} />
         </AntTable.Summary>
       )}
+      locale={{
+        emptyText: (
+          <Empty description="暂无数据" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        ),
+      }}
       {...restProps}
     />
   );

@@ -1,0 +1,15 @@
+// loading加载动画
+.xwct-container {
+  height: calc(100% - $_headerHeight - $_contentFooterHeight);
+  .ant-spin-nested-loading,
+  .ant-spin-container {
+    height: 100%;
+  }
+  .container-div {
+    background: $_color_white;
+    margin: $_moduleMargin;
+    padding: $_modulePadding;
+    overflow: auto;
+    height: calc(100% - 20px);
+  }
+}

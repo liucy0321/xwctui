@@ -9,5 +9,4 @@ export declare type ITableComponent = typeof Table & {
   Summary: typeof AntTable.Summary;
   DiffClassName: string;
 };
-declare const TransTable: ITableComponent;
 export default Table;

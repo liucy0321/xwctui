@@ -2,13 +2,10 @@
 @import "variables";
 
 // layout
-@import "reboot";
+// @import "reboot";
 
 // mixin
 @import "mixin";
-
-// animation
-@import "animation";
 
 // button
 @import "../components/Button/style";
@@ -16,10 +13,14 @@
 // input
 @import "../components/Input/style";
 
-// select
-@import "../components/Select/style";
-
 // table
 @import "../components/Table/style";
 
-@import "~antd/dist/antd.css";
+// form
+@import "../components/Form/style";
+
+// Footer
+@import "../components/Footer/style";
+
+// Container
+@import "../components/Container/style";

@@ -1,0 +1,48 @@
+.button-group {
+  color: #b4b4b4;
+  font-size: 10px;
+  text-align: left;
+  width: 100%;
+  > button {
+    margin-right: $_elementMargin !important;
+    margin: auto;
+    &:last-child {
+      margin-right: 0 !important;
+    }
+  }
+  .ant-pagination {
+    text-align: center;
+    .ant-pagination-total-text {
+      float: right;
+      padding-right: 10px;
+    }
+  }
+}
+.xwct-footer {
+  padding: 0 !important;
+  background: $_color_white !important;
+  height: $_contentFooterHeight !important;
+  line-height: $_contentFooterHeight !important;
+  border-bottom: 1px solid $_color_appBg !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 10px !important;
+  .ant-select-selector {
+    color: $_color_black;
+  }
+}
+.button-droupdown {
+  .ant-dropdown-trigger {
+    padding: 0;
+  }
+  > button {
+    background-color: #ebf3fe;
+    border-color: $_color_system;
+    color: $_color_secondary;
+    &:hover {
+      background-color: $_color_system;
+      border-color: $_color_system;
+      color: $_color_important;
+    }
+  }
+}

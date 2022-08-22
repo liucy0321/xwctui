@@ -8,6 +8,9 @@
       min-width: 50px;
       padding: 5px 10px;
     }
+    .ant-table-body {
+      overflow: auto !important;
+    }
   }
   .ant-table-summary {
     color: red;
@@ -20,14 +23,6 @@
           display: none;
         }
       }
-    }
-  }
-}
-// 小计合计样式
-.last-sum-col {
-  .ant-table-content {
-    tbody > tr:last-child {
-      color: red;
     }
   }
 }

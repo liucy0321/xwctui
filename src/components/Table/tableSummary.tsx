@@ -31,23 +31,22 @@ export const TableSummary: FC<ISumTableProps> = (sumProps) => {
   return (
     <>
       {/* <AntTable.Summary fixed> */}
-      {summaryConfig?.map((sumItem) => {
+      {summaryConfig?.map((sumItem, sumIndex) => {
         return (
-          <AntTable.Summary.Row>
+          <AntTable.Summary.Row key={sumIndex}>
             {columns?.map((colItem, index) => {
-              debugger;
               const itemIndex = sumItem.fields.findIndex(
                 (item) => item.key === colItem?.key
               );
               if (itemIndex >= 0) {
                 return (
-                  <AntTable.Summary.Cell index={index}>
+                  <AntTable.Summary.Cell index={index} key={index + "a"}>
                     {sumItem.fields[itemIndex]?.value}
                   </AntTable.Summary.Cell>
                 );
               } else {
                 return (
-                  <AntTable.Summary.Cell index={index}>
+                  <AntTable.Summary.Cell index={index} key={index + "a"}>
                     <strong>
                       {index === 0
                         ? sumItem?.type === "total"

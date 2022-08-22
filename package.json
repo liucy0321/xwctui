@@ -1,6 +1,6 @@
 {
   "name": "xwctui",
-  "version": "0.1.18",
+  "version": "0.1.36",
   "description": "React components library",
   "author": "Liu ChenYue",
   "private": false,
@@ -15,10 +15,10 @@
     "React",
     "antd"
   ],
-  "homepage": "http://vikingship.xyz",
+  "homepage": "https://www.baidu.com/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vikingmute/vikingship"
+    "url": "https://github.com/liucy0321/xwctui.git"
   },
   "files": [
     "dist"
@@ -52,7 +52,7 @@
     "build-ts": "tsc -p tsconfig.build.json",
     "build-css": "node-sass ./src/styles/index.scss ./dist/index.css",
     "prepublishOnly": "npm run test:nowatch && npm run lint && npm run build",
-    "@types/react": "^18.0.15",
+    "@types/react": "^18.0.17",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "build-es": "rollup --config rollup/rollup.esm.config.js",
@@ -86,28 +86,28 @@
   "devDependencies": {
     "@babel/core": "^7.18.10",
     "@mdx-js/react": "^2.1.2",
-    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-replace": "^4.0.0",
-    "@storybook/addon-actions": "^6.5.9",
-    "@storybook/addon-essentials": "^6.5.9",
-    "@storybook/addon-interactions": "^6.5.9",
-    "@storybook/addon-links": "^6.5.9",
-    "@storybook/builder-webpack5": "^6.5.9",
-    "@storybook/manager-webpack5": "^6.5.9",
+    "@storybook/addon-actions": "^6.5.10",
+    "@storybook/addon-essentials": "^6.5.10",
+    "@storybook/addon-interactions": "^6.5.10",
+    "@storybook/addon-links": "^6.5.10",
+    "@storybook/builder-webpack5": "^6.5.10",
+    "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/preset-create-react-app": "^4.1.2",
     "@storybook/preset-scss": "^1.0.3",
-    "@storybook/react": "^6.5.9",
+    "@storybook/react": "^6.5.10",
     "@storybook/testing-library": "^0.0.13",
-    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^14.3.0",
+    "@testing-library/user-event": "^14.4.2",
     "@types/classnames": "^2.3.0",
     "@types/jest": "^28.1.6",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "18.6.3",
-    "@types/react": "^18.0.15",
+    "@types/node": "18.6.5",
+    "@types/react": "^18.0.17",
     "@types/react-dom": "18.0.6",
     "@types/react-transition-group": "^4.4.5",
     "babel-loader": "^8.2.5",
@@ -125,10 +125,10 @@
     "rollup-plugin-sass": "^1.2.13",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.32.1",
-    "sass": "^1.54.0",
+    "sass": "^1.54.3",
     "sass-loader": "^13.0.2",
     "typescript": "^4.7.4",
-    "antd": "^4.22.3",
+    "antd": "^4.22.4",
     "webpack": "^5.74.0"
   }
 }

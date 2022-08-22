@@ -1,8 +1,8 @@
 import React from "react";
 import { ComponentMeta } from "@storybook/react";
-
 import Table from "./index";
 import { ColumnsType } from "antd/lib/table";
+
 export default {
   title: "Table表格",
   component: Table,
@@ -130,13 +130,13 @@ export const ADefaultTable = (args) => (
     columns={columns}
     dataSource={[
       { code: "1212", name: "gaeer", num: "2" },
+      { code: "3232", name: "玛丽", num: "2" },
       { code: "3421", name: "玛丽", num: "2" },
-      { code: "3421", name: "玛丽", num: "2" },
-      { code: "3421", name: "玛丽", num: "2" },
-      { code: "3421", name: "玛丽", num: "2" },
-      { code: "3421", name: "玛丽", num: "2" },
+      { code: "4324", name: "玛丽", num: "2" },
+      { code: "5454", name: "玛丽", num: "2" },
+      { code: "6546", name: "玛丽", num: "2" },
     ]}
-    rowKey="id"
+    rowKey="code"
     summaryConfig={[
       {
         type: "total",
@@ -144,6 +144,11 @@ export const ADefaultTable = (args) => (
           {
             key: "num",
             value: 12,
+            toFixedNum: 0,
+          },
+          {
+            key: "code",
+            value: 1212,
             toFixedNum: 0,
           },
           {
