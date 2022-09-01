@@ -1,5 +1,5 @@
 .xwct-form {
-  min-width: 800px;
+  // min-width: 800px;
   .ant-form-item:focus-within .ant-form-item-row {
     border-color: $_color_primary;
   }
@@ -125,7 +125,8 @@
       input,
       textarea,
       .ant-picker,
-      .ant-select-selector {
+      .ant-select-selector,
+      .ant-input-number {
         border: none;
         width: 100%;
         border-radius: 4px !important;
@@ -139,7 +140,8 @@
       .ant-picker-focused,
       .ant-select-focused,
       .ant-input-group-addon,
-      .ant-input-affix-wrapper {
+      .ant-input-affix-wrapper,
+      .ant-input-number {
         box-shadow: none !important;
         border: none !important;
       }
@@ -169,14 +171,26 @@
     flex-grow: 1;
     flex: 1 1;
     position: relative;
+    align-items: flex-start;
   }
   .search-right {
     display: flex;
-    justify-content: flex-end;
-    width: 150px;
-    text-align: center;
-    .ant-btn-primary {
+    flex-wrap: wrap;
+    // justify-content: center;
+    max-width: 220px;
+    align-content: baseline;
+    button {
+      margin: 0 10px 10px 0;
       margin-right: 10px;
+    }
+    button:last-child {
+      margin-right: 0px;
+    }
+    .ant-dropdown-trigger {
+      padding: 2px 10px;
+      svg {
+        font-size: 25px;
+      }
     }
   }
 }

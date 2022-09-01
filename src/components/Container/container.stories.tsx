@@ -62,7 +62,7 @@ export const BButtonWithSize = () => {
   );
   return (
     <>
-      <Container loading={true}>
+      <Container loading={true} noFooter>
         <p>323232</p> <p>323232</p> <p>323232</p> <p>323232</p> <p>323232</p>
         <p>323232</p>
       </Container>

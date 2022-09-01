@@ -2,7 +2,16 @@ import React from "react";
 import { ComponentMeta } from "@storybook/react";
 import Form from "./index";
 import { validateStowage } from "./form";
-import { Button, Select, Input, DatePicker, Radio, Checkbox } from "antd";
+import {
+  Button,
+  Select,
+  Input,
+  DatePicker,
+  Radio,
+  Checkbox,
+  InputNumber,
+} from "antd";
+import { UserOutlined } from "@ant-design/icons";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Item, SearchLeft, SearchRight } = Form;
@@ -53,6 +62,7 @@ export const ABasicForm = (args) => {
         <Button type="primary" htmlType="submit">
           查fd询
         </Button>
+        <Button type="default">重置</Button>
         <Button type="default">重置</Button>
       </SearchRight>
     </Form>
@@ -110,6 +120,9 @@ export const CFullForm = (args) => {
   function onResetHandle() {
     form.resetFields();
   }
+  const onClickByA = () => {
+    console.log("导出");
+  };
   return (
     <Form form={form} name="finance-in-list">
       <SearchLeft>
@@ -201,13 +214,27 @@ export const CFullForm = (args) => {
           name="username7"
           rules={[{ required: true, message: "Please input your username!" }]}
         >
-          <Input.TextArea rows={3} />
+          <InputNumber />
         </Item>
       </SearchLeft>
       <SearchRight
         onSearchHandle={onSearchHandle}
         onResetHandle={onResetHandle}
-      />
+        disBtnRoutes={["query", "reset"]}
+        // hideDefBtn
+        otherBtn={[
+          {
+            icon: <UserOutlined style={{ marginRight: 5 }} />,
+            name: "导出",
+            onClick: onClickByA,
+          },
+          {
+            icon: <UserOutlined style={{ marginRight: 5 }} />,
+            name: "导入",
+            onClick: onClickByA,
+          },
+        ]}
+      ></SearchRight>
     </Form>
   );
 };

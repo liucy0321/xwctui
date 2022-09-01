@@ -31,21 +31,20 @@ BDisabled.storyName = "被禁用的 Input";
 export const CIcon = Template.bind({});
 CIcon.args = {
   placeholder: "input with icon",
-  icon: "search",
 };
 CIcon.storyName = "带图标的 Input";
 
 export const DSizeInput = () => (
   <>
-    <Input defaultValue="large size" size="lg" />
-    <Input placeholder="small size" size="sm" />
+    <Input defaultValue="large size" size="large" />
+    <Input placeholder="small size" size="small" />
   </>
 );
 DSizeInput.storyName = "大小不同的 Input";
 export const EPandInput = () => (
   <>
-    <Input defaultValue="prepend text" prepend="https://" />
-    <Input defaultValue="google" append=".com" />
+    <Input defaultValue="prepend text" />
+    <Input defaultValue="google" />
   </>
 );
 

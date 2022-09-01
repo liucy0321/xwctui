@@ -1,28 +1,36 @@
-.xwct-table {
-  .ant-table {
-    min-width: 600px;
-    .ant-table-thead > tr > th,
-    .ant-table-tbody > tr > td,
-    .ant-table-summary > tr > td,
-    .ant-table-footer {
-      min-width: 50px;
-      padding: 5px 10px;
-    }
-    .ant-table-body {
-      overflow: auto !important;
-    }
-  }
-  .ant-table-summary {
-    color: red;
-  }
+.ant-table {
+  // min-width: 600px;
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td,
+  .ant-table-summary > tr > td,
   .ant-table-footer {
-    padding: 0px;
-    .footer-sum-table {
-      .antd-table {
-        .ant-table-thead {
-          display: none;
-        }
+    padding: 3px 10px;
+  }
+
+  .ant-table-tbody > tr > td,
+  .ant-table-summary > tr > td,
+  .ant-table-footer {
+    line-height: 28px;
+  }
+}
+.ant-table-summary {
+  color: red;
+}
+.ant-table-footer {
+  padding: 0px;
+  .footer-sum-table {
+    .antd-table {
+      .ant-table-thead {
+        display: none;
       }
     }
+  }
+}
+.ant-table-cell-fix-right {
+  //   flex-wrap: wrap;
+  //   display: flex;
+  //   align-items: flex-start;
+  .ant-btn-link {
+    padding: 0px 10px;
   }
 }

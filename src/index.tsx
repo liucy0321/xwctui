@@ -8,6 +8,7 @@ export { default as Table } from "./components/Table";
 export { default as Form } from "./components/Form";
 export { default as Footer } from "./components/Footer";
 export { default as Container } from "./components/Container";
+export { default as Input } from "./components/Input";
 export type { SelectProps } from "antd/lib/select";
 export type { ColumnsType } from "antd/lib/table";
 export type { ItemType } from "antd/lib/menu/hooks/useItems";
@@ -15,7 +16,6 @@ export type { ButtonType } from "antd/lib/button";
 
 export {
   Button,
-  Input,
   Checkbox,
   Menu,
   Pagination,
@@ -26,6 +26,7 @@ export {
   DatePicker,
   Radio,
   Switch,
+  InputNumber,
 } from "antd";
 export {
   Select,

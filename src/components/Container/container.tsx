@@ -6,13 +6,17 @@ interface IContainerProps {
   loading?: boolean;
   className?: string;
   children?: any;
+  noFooter?: boolean;
 }
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 export const Container: FC<IContainerProps> = (props) => {
-  const { loading, className, children } = props;
+  const { loading, className, children, noFooter } = props;
   const classes = classNames(className, "container-div");
+  const style = {
+    height: noFooter ? "calc(100% - 40px)" : "calc(100% - 80px)",
+  };
   return (
-    <div className="xwct-container">
+    <div style={style} className="xwct-container">
       <Spin spinning={loading} indicator={antIcon}>
         <div className={classes}>{children}</div>
       </Spin>
