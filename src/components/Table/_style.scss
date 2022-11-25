@@ -1,36 +1,80 @@
-.ant-table {
-  // min-width: 600px;
-  .ant-table-thead > tr > th,
-  .ant-table-tbody > tr > td,
-  .ant-table-summary > tr > td,
-  .ant-table-footer {
-    padding: 3px 10px;
-  }
+.xwct-table {
+  .ant-table {
+    // min-width: 600px;
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td,
+    .ant-table-summary > tr > td,
+    .ant-table-footer {
+      padding: 3px 10px;
+    }
 
-  .ant-table-tbody > tr > td,
-  .ant-table-summary > tr > td,
-  .ant-table-footer {
-    line-height: 28px;
+    .ant-table-tbody > tr > td,
+    .ant-table-summary > tr > td,
+    .ant-table-footer {
+      line-height: 28px !important;
+    }
+    .ant-table-tbody tr:nth-child(2n + 1) {
+      // background-color: #f0f8ff7d;
+      td {
+        background-color: #f9fdff;
+      }
+    }
+    .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+      background-color: #effaff;
+    }
+    .ant-table-body .ant-table-row-hover {
+      background: #effaff;
+    }
+    .ant-table-body .ant-table-row-hover > td {
+      background: #effaff;
+    }
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background: #e6f7ff !important;
+    }
   }
-}
-.ant-table-summary {
-  color: red;
-}
-.ant-table-footer {
-  padding: 0px;
-  .footer-sum-table {
-    .antd-table {
-      .ant-table-thead {
-        display: none;
+  .red-column-span {
+    color: red;
+    padding-right: 5px;
+  }
+  .ant-table-summary {
+    color: red;
+    height: 37px;
+  }
+  .ant-table-footer {
+    padding: 0px;
+    .footer-sum-table {
+      .antd-table {
+        .ant-table-thead {
+          display: none;
+        }
       }
     }
   }
-}
-.ant-table-cell-fix-right {
-  //   flex-wrap: wrap;
-  //   display: flex;
-  //   align-items: flex-start;
-  .ant-btn-link {
-    padding: 0px 10px;
+  .ant-table-cell {
+    vertical-align: middle;
+    .ant-btn-link {
+      padding: 0px;
+      max-height: 25px;
+    }
+    .ant-input-number,
+    .ant-select {
+      width: 100%;
+    }
+    .add_del_css {
+      .anticon {
+        width: 20px;
+        margin: 0 auto;
+        display: block;
+        cursor: pointer;
+      }
+    }
+  }
+  .ant-table-cell-fix-right {
+    //   flex-wrap: wrap;
+    //   display: flex;
+    //   align-items: flex-start;
+    .ant-btn-link {
+      padding: 0px 10px;
+    }
   }
 }

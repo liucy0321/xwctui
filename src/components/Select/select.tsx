@@ -18,7 +18,7 @@ export type SelectProps = AntSelectProps;
  * ~~~
  */
 export const Select: FC<SelectProps> = (props) => {
-  const { children, ...restProps } = props;
+  const { children, onSearch, ...restProps } = props;
   return (
     <AntSelect {...restProps} className="xwct-select">
       {children}

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Form as AntForm, FormItemProps as AntFormItemProps } from "antd";
 const { Item } = AntForm;
 interface IFormItem {
-  width?: "half" | "all" | "double" | "halfAll";
+  width?: "half" | "quarter" | "all" | "double" | "halfAll" | "normal";
   /**没有边框 */
   noBorder?: boolean;
   /**没有label */
@@ -27,15 +27,17 @@ export const FormItem: FC<IFormItemProps> = (props) => {
   function getWidthStr(width) {
     switch (width) {
       case "half":
-        return "calc(16.6% - 10px)";
+        return "16.666666% ";
+      case "quarter":
+        return "25%";
       case "all":
-        return "calc(100% - 10px)";
+        return "100%";
       case "double":
-        return "calc(66.6% - 10px)";
+        return "66.666666%";
       case "halfAll":
-        return "calc(50% - 10px)";
+        return "50%";
       default:
-        return "calc(33.3% - 10px)";
+        return "33.333333%";
     }
   }
   const classes = classNames(className, {

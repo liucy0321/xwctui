@@ -9,12 +9,16 @@ export { default as Form } from "./components/Form";
 export { default as Footer } from "./components/Footer";
 export { default as Container } from "./components/Container";
 export { default as Input } from "./components/Input";
+export { default as QuickQuery } from "./components/QuickQuery";
 export type { SelectProps } from "antd/lib/select";
-export type { ColumnsType } from "antd/lib/table";
+export type { ColumnsType } from "./components/Table/table";
 export type { ItemType } from "antd/lib/menu/hooks/useItems";
-export type { ButtonType } from "antd/lib/button";
+export type { TableRowSelection } from "antd/lib/table/interface";
+export type { ButtonProps, ButtonShape, ButtonType } from "antd/lib/button";
+export { default as timeTransForm } from "./utils/timeTransForm";
 
 export {
+  DatePicker,
   Button,
   Checkbox,
   Menu,
@@ -23,12 +27,13 @@ export {
   Layout,
   Modal,
   Upload,
-  DatePicker,
   Radio,
   Switch,
   InputNumber,
 } from "antd";
 export {
+  Calendar,
+  Alert,
   Select,
   ConfigProvider,
   Drawer,
@@ -54,6 +59,7 @@ export {
   Transfer,
   Row,
   Col,
+  Collapse,
 } from "antd";
 export { default as zhCN } from "antd/lib/locale/zh_CN";
 export { default as Icon, createFromIconfontCN } from "@ant-design/icons";

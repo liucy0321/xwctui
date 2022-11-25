@@ -126,7 +126,7 @@ export const CFullForm = (args) => {
   return (
     <Form form={form} name="finance-in-list">
       <SearchLeft>
-        <Item label="Username" name="username">
+        <Item label="Username" name="username" width="half">
           <Input allowClear autoComplete="off" />
         </Item>
         <Item>
@@ -162,6 +162,7 @@ export const CFullForm = (args) => {
           name="username3"
           rules={[{ required: true, message: "Please input your username!" }]}
           validateStatus="error"
+          width="double"
         >
           <Select placeholder="请选择" allowClear>
             <Select.Option value="nihao">fdfd</Select.Option>

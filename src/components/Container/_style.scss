@@ -8,7 +8,8 @@
     background: $_color_white;
     margin: $_moduleMargin;
     padding: $_modulePadding;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: calc(100% - 20px);
   }
 }
