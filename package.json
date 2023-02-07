@@ -1,6 +1,6 @@
 {
   "name": "xwctui",
-  "version": "1.0.28",
+  "version": "1.2.1",
   "description": "React components library",
   "author": "Liu ChenYue",
   "private": false,
@@ -33,13 +33,14 @@
     "async-validator": "^4.2.5",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
+    "immutability-helper": "^3.1.1",
     "lodash-es": "^4.17.21",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-transition-group": "^4.4.5"
   },
   "peerDependencies": {
-    "antd": "4.22.2",
+    "antd": ">=4.22.2",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },

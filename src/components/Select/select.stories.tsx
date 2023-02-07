@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentMeta } from "@storybook/react";
 
 import Select from "./index";
+import Input from "../Input/index";
 export default {
   title: "Select下拉框",
   component: Select,
@@ -17,13 +18,16 @@ export default {
 } as ComponentMeta<typeof Select>;
 
 export const ADefaultSelect = (args) => (
-  <Select {...args} placeholder="请选择">
-    <Select.Option value="nihao" />
-    <Select.Option value="nihao2" />
-    <Select.Option value="nihao3" />
-    <Select.Option value="disabled" disabled />
-    <Select.Option value="nihao5" />
-  </Select>
+  <>
+    <Input />
+    <Select {...args} placeholder="请选择">
+      <Select.Option value="nihao" />
+      <Select.Option value="nihao2" />
+      <Select.Option value="nihao3" />
+      <Select.Option value="disabled" disabled />
+      <Select.Option value="nihao5" />
+    </Select>
+  </>
 );
 ADefaultSelect.storyName = "默认的Select";
 export const BMultipleSelect = (args) => (

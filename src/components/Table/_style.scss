@@ -1,4 +1,13 @@
 .xwct-table {
+  .ant-table.ant-table-bordered
+    > .ant-table-container
+    > .ant-table-body
+    > table
+    > tbody
+    > tr
+    > td {
+    height: 35px;
+  }
   .ant-table {
     // min-width: 600px;
     .ant-table-thead > tr > th,

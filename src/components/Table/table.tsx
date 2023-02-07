@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useCallback } from "react";
 import {
   TableProps,
   Table as AntTable,
@@ -8,17 +8,21 @@ import {
   Switch,
   Popconfirm,
 } from "antd";
+import { DndProvider } from "react-dnd";
 import { ColumnType } from "antd/lib/table";
 import { TableSummary } from "./tableSummary";
-import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import type { ISummaryConfig } from "./tableSummary";
+import { clone, thousandth } from "./utils/common";
+import { DraggableBodyRow } from "./components/row";
+import update from "immutability-helper";
 import {
   PlusOutlined,
   MinusOutlined,
   MenuFoldOutlined,
 } from "@ant-design/icons";
 import classNames from "classnames";
+import { optionsTyps, findFromData, getParam } from "./utils/common";
 // 选择
 export interface ISelectContext {
   onSelect?: (value: string, isSelected?: boolean) => void;
@@ -34,6 +38,8 @@ export interface IColumnType<RecordType> extends ColumnType<RecordType> {
   toFixedNum?: number;
   /**数字千分位 */
   thousandth?: boolean;
+  /**是否层级 */
+  ifShowIndent?: boolean;
 }
 export interface IColumnGroupType<RecordType>
   extends Omit<IColumnType<RecordType>, ""> {
@@ -56,8 +62,10 @@ export interface IProps<RecordType>
   /**是否显示小计或总计 */
   summaryConfig?: ISummaryConfig[];
   summaryFixed?: boolean;
+  /**父id标识 */
+  parentChildSign?: string[];
   /**表格行拖拽 */
-  onMoveRow?: (dragIndex: number, hoverIndex: number) => void;
+  onMoveRow?: (data: any, dragParentIndex?: any, operateType?: string) => void;
   /**表格列编辑事件 */
   onEditableSave?: (
     record: RecordType,
@@ -66,11 +74,20 @@ export interface IProps<RecordType>
   ) => void;
   /**表格动态列配置事件 */
   onDynamicChange?: (dynamicColumns: ColumnsType<RecordType>) => void;
-  /**初始化值 */
-  initColumns?: ColumnsType<RecordType>;
   columns?: ColumnsType<RecordType>;
   dataSource?: any[];
   className?: string;
+  /**树形层级level名称 */
+  indentTitle?: string;
+}
+export interface DraggableBodyRowProps
+  extends React.HTMLAttributes<HTMLTableRowElement> {
+  index: number;
+  record: any;
+  data: any;
+  moveRow: (opt: any) => void;
+  findRow: any;
+  parentchildsign: any;
 }
 /**
  * TodoList
@@ -82,38 +99,12 @@ export interface IProps<RecordType>
  * 实现可拖拽行 completed
  * 实现可编辑功能
  */
-// 深拷贝方法
-export function clone(data) {
-  //2.判断值类型（即不是object类型）
-  if (typeof data != "object") {
-    return data;
-  }
-  //3.判断数组
-  else if (data.constructor === Array) {
-    return data.map((i) => clone(i));
-  }
-  //4.判断json类型
-  else if (data.constructor === Object) {
-    let tem = {};
-    for (let key in data) {
-      tem[key] = clone(data[key]);
-    }
-    return tem;
-  }
-  //5.判断系统对象和自定义对象
-  else {
-    return new data.constructor(data);
-  }
-}
-// 表格列数字千分位
-export function thousandth(num) {
-  if (!(/^[-\d]\d*$/.test(num) || /^[-\d]\d*\.\d*$/.test(num))) {
-    return num;
-  }
-  let newNum = (num < 0 ? -num : num) + "";
-  const reg = new RegExp("\\B(?<!(\\.\\d+))(?=(\\d{3})+\\b)", "g"); // return (num < 0 ? "-" : "") + newNum.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g, ',$1');
-  return (num < 0 ? "-" : "") + newNum.replace(reg, ","); // 小数位不进行千分位。
-}
+
+const components = {
+  body: {
+    row: DraggableBodyRow,
+  },
+};
 export const Table: FC<IProps<any>> = (props) => {
   const {
     children,
@@ -126,6 +117,10 @@ export const Table: FC<IProps<any>> = (props) => {
     hideAddIcon,
     hideDelIcon,
     className,
+    indentSize,
+    indentTitle,
+    parentChildSign,
+    onMoveRow,
     ...restProps
   } = props;
   const [open, setOpen] = useState(false);
@@ -191,7 +186,8 @@ export const Table: FC<IProps<any>> = (props) => {
       render: (text, record, index) => (
         <div className="add_del_css">
           <PlusOutlined
-            disabled={hideAddIcon}
+            // disabled={hideAddIcon}
+            style={{ display: hideAddIcon ? "none" : "block" }}
             onClick={() => {
               onAddAndDelHandle("add", index);
             }}
@@ -204,11 +200,29 @@ export const Table: FC<IProps<any>> = (props) => {
               onAddAndDelHandle("del", index);
             }}
           >
-            <MinusOutlined disabled={hideDelIcon} />
+            <MinusOutlined
+              style={{ display: hideDelIcon ? "none" : "block" }}
+            />
           </Popconfirm>
         </div>
       ),
     });
+  }
+  /**
+   * 树形根据层级增加缩进
+   */
+  if (indentTitle) {
+    for (let i = 0; i < copyColumns.length; i++) {
+      if (copyColumns[i]?.ifShowIndent) {
+        copyColumns[i] = {
+          ...copyColumns[i],
+          render: (text, record, index) => {
+            const padding = (indentSize || 15) * (record?.[indentTitle] - 1);
+            return <span style={{ paddingLeft: padding + "px" }}>{text}</span>;
+          },
+        };
+      }
+    }
   }
   const showDrawer = () => {
     setOpen(true);
@@ -257,39 +271,251 @@ export const Table: FC<IProps<any>> = (props) => {
     },
   ];
   const classes = classNames("xwct-table", className);
-  // 动态表头配置
+  // 拖拽
+  const findRow = (id) => {
+    const { row, index, parentIndex } = findFromData(
+      dataSource,
+      id,
+      parentChildSign
+    );
+    return {
+      row,
+      rowIndex: index,
+      rowParentIndex: parentIndex,
+    };
+  };
+  /**
+   * 表格拖拽
+   * @param props
+   * @returns
+   */
+  const moveRow = useCallback(
+    (props) => {
+      if (parentChildSign?.length !== 2) {
+        return;
+      }
+      let { dragId, dropId, dropParentId, operateType, originalIndex } = props;
+      let {
+        dragRow,
+        dropRow,
+        dragIndex,
+        dropIndex,
+        dragParentIndex, // 拖拽子节点的父节点索引
+        // dropParentIndex, // 放置子节点父节点索引
+      } = getParam(dataSource, dragId, dropId, parentChildSign);
+      // 拖拽是否是组
+      // let dragIsGroup =
+      //   dragRow?.type === dataType.group || !dragRow?.[parentChildSign?.[1]];
+      let dragIsGroup = !dragRow?.[parentChildSign?.[1]];
+      // 放置的是否是组
+      let dropIsGroup = !dropParentId;
+
+      // 根据变化的数据查找拖拽行的row和索引
+      const {
+        row,
+        index: rowIndex,
+        // parentIndex: rowParentIndex,
+      } = findFromData(dataSource, dragId, parentChildSign);
+      let newData = dataSource;
+      // 组拖拽
+      if (dragIsGroup && dropIsGroup) {
+        // 超出出拖拽区域还原
+        if (operateType === optionsTyps.didDrop) {
+          newData = update(dataSource, {
+            $splice: [
+              [rowIndex, 1], //删除目前拖拽的索引的数据
+              [originalIndex, 0, row], // 将拖拽数据插入原始索引位置
+            ],
+          });
+        } else {
+          newData = update(dataSource, {
+            $splice: [
+              [dragIndex, 1],
+              [dropIndex, 0, dragRow],
+            ],
+          });
+        }
+      }
+      // 同一组下的子项拖拽
+      else if (
+        dragRow?.[parentChildSign?.[1]] === dropRow?.[parentChildSign?.[1]]
+      ) {
+        let resultIndex: any = [...dragParentIndex];
+        if (resultIndex.length > 0) {
+          resultIndex.splice(resultIndex.length - 1, 1);
+        }
+        // 超出拖拽区域还原
+        if (operateType === optionsTyps.didDrop) {
+          switch (resultIndex?.length) {
+            case 1: {
+              // 二级数组
+              newData = update(dataSource, {
+                [resultIndex?.[0]]: {
+                  children: {
+                    $splice: [
+                      [rowIndex, 1],
+                      [originalIndex, 0, row],
+                    ],
+                  },
+                },
+              });
+              break;
+            }
+            case 2: {
+              // 三级数组
+              newData = update(dataSource, {
+                [resultIndex?.[0]]: {
+                  children: {
+                    [resultIndex?.[1]]: {
+                      children: {
+                        $splice: [
+                          [rowIndex, 1],
+                          [originalIndex, 0, row],
+                        ],
+                      },
+                    },
+                  },
+                },
+              });
+              break;
+            }
+            case 3: {
+              // 四级数组
+              newData = update(dataSource, {
+                [resultIndex?.[0]]: {
+                  children: {
+                    [resultIndex?.[1]]: {
+                      children: {
+                        [resultIndex?.[2]]: {
+                          children: {
+                            $splice: [
+                              [rowIndex, 1],
+                              [originalIndex, 0, row],
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              });
+            }
+          }
+        } else {
+          switch (resultIndex?.length) {
+            case 1: {
+              // 二级数组
+              newData = update(dataSource, {
+                [resultIndex?.[0]]: {
+                  children: {
+                    $splice: [
+                      [dragIndex, 1],
+                      [dropIndex, 0, dragRow],
+                    ],
+                  },
+                },
+              });
+              break;
+            }
+            case 2: {
+              // 三级数组
+              newData = update(dataSource, {
+                [resultIndex?.[0]]: {
+                  children: {
+                    [resultIndex?.[1]]: {
+                      children: {
+                        $splice: [
+                          [dragIndex, 1],
+                          [dropIndex, 0, dragRow],
+                        ],
+                      },
+                    },
+                  },
+                },
+              });
+              break;
+            }
+            case 3: {
+              // 四级数组
+              newData = update(dataSource, {
+                [resultIndex?.[0]]: {
+                  children: {
+                    [resultIndex?.[1]]: {
+                      children: {
+                        [resultIndex?.[2]]: {
+                          children: {
+                            $splice: [
+                              [dragIndex, 1],
+                              [dropIndex, 0, dragRow],
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              });
+            }
+          }
+        }
+      }
+      if (onMoveRow) {
+        onMoveRow(newData, dragParentIndex, operateType);
+      }
+    },
+    [dataSource, onMoveRow, parentChildSign]
+  );
   return (
     <>
-      <AntTable
-        bordered
-        columns={copyColumns}
-        className={classes}
-        scroll={{ x: 1000, y: 500 }}
-        pagination={false}
-        rowSelection={rowSelection}
-        dataSource={dataSource}
-        summary={() =>
-          summaryConfig ? (
-            <AntTable.Summary fixed>
-              <TableSummary
-                columns={copyColumns}
-                summaryConfig={summaryConfig}
-                rowSelection={rowSelection}
-                dataSource={dataSource}
+      <DndProvider backend={HTML5Backend}>
+        <AntTable
+          bordered
+          columns={copyColumns}
+          components={onMoveRow ? components : undefined}
+          className={classes}
+          scroll={{ x: 1000, y: 500 }}
+          pagination={false}
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          indentSize={indentSize}
+          summary={() =>
+            summaryConfig ? (
+              <AntTable.Summary fixed>
+                <TableSummary
+                  columns={copyColumns}
+                  summaryConfig={summaryConfig}
+                  rowSelection={rowSelection}
+                  dataSource={dataSource}
+                />
+              </AntTable.Summary>
+            ) : null
+          }
+          locale={{
+            emptyText: (
+              <Empty
+                description="暂无数据"
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
-            </AntTable.Summary>
-          ) : null
-        }
-        locale={{
-          emptyText: (
-            <Empty
-              description="暂无数据"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          ),
-        }}
-        {...restProps}
-      />
+            ),
+          }}
+          onRow={
+            onMoveRow
+              ? (record, index) => {
+                  const attr = {
+                    index,
+                    record,
+                    data: dataSource,
+                    parentchildsign: parentChildSign,
+                    moveRow: moveRow,
+                    findRow: findRow,
+                  };
+                  return attr as DraggableBodyRowProps;
+                }
+              : undefined
+          }
+          {...restProps}
+        />
+      </DndProvider>
       <Modal
         title="动态表头配置"
         closable={false}

@@ -36,7 +36,10 @@ export const QuickQuery: FC<IQuickQueryProps & DrawerProps> = (props) => {
   // };
   const copywidth = width ? width + "px" : "300px";
   return (
-    <div className={classes} style={{ height: height || "calc(100% - 43px)" }}>
+    <div
+      className={classes}
+      style={{ maxHeight: height || "calc(100% - 43px)" }}
+    >
       <div style={{ marginRight: visible ? copywidth : "0", height: "100%" }}>
         <p className="top_now_dept">
           {typeof topNode === "string" ? <b>{topNode}</b> : topNode}

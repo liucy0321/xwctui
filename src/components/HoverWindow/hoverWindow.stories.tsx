@@ -1,22 +1,22 @@
-import React, { ReactElement, useMemo, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 //import WelcomeMDX from '../Welcome/Welcome.stories.mdx'
-import QuickQuery from "./quickQuery";
+import HoverWindow from "./hoverWindow";
 import Footer from "../Footer/index";
 
 // https://github.com/storybookjs/storybook/issues/15574
 export default {
-  title: "QuickQuery",
-  component: QuickQuery,
+  title: "HoverWindow",
+  component: HoverWindow,
   // parameters: {
   //   docs: {
   //     page: WelcomeMDX
   //   }
   // }
-} as ComponentMeta<typeof QuickQuery>;
+} as ComponentMeta<typeof HoverWindow>;
 
-const Template: ComponentStory<typeof QuickQuery> = (args) => (
-  <QuickQuery {...args} />
+const Template: ComponentStory<typeof HoverWindow> = (args) => (
+  <HoverWindow {...args} />
 );
 export const ADefault = Template.bind({});
 ADefault.args = {
@@ -61,18 +61,15 @@ export const BButtonWithSize = () => {
     ],
     []
   );
+  useEffect(() => {
+    setVisible(true);
+  }, []);
   return (
     <>
-      <QuickQuery
-        topNode={"aaa"}
-        visible={visible}
-        onClickByTopNow={() => {
-          setVisible(!visible);
-        }}
-      >
+      <HoverWindow visible={visible} setVisible={setVisible}>
         <p>323232</p> <p>323232</p> <p>323232</p> <p>323232</p> <p>323232</p>
         <p>323232</p>
-      </QuickQuery>
+      </HoverWindow>
       <Footer footerDom={footerDom} />
     </>
   );

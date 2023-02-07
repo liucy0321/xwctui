@@ -1,7 +1,7 @@
 import React, { FC, useState, useCallback, useEffect } from "react";
 import { Table as AntTable } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import { clone, thousandth } from "./table";
+import { clone, thousandth } from "./utils/common";
 // 选择
 export interface ISelectContext {
   onSelect?: (value: string, isSelected?: boolean) => void;
@@ -44,11 +44,14 @@ export const TableSummary: FC<ISumTableProps> = (sumProps) => {
   const treeSummaryNode = useCallback((data: any[], strArray) => {
     for (var i = 0; i < data?.length; i++) {
       for (let item in strArray) {
-        if (data[i][item]) {
+        if (data?.[i]?.[item]) {
           strArray[item] += data[i][item];
         }
       }
-      if (data[i].children instanceof Array && data[i].children.length > 0) {
+      if (
+        data?.[i]?.children instanceof Array &&
+        data?.[i]?.children.length > 0
+      ) {
         // 如果当前child为数组并且长度大于0，才可进入flag()方法
         treeSummaryNode(data[i].children, strArray);
       }

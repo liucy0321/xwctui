@@ -8,15 +8,16 @@ export { default as Table } from "./components/Table";
 export { default as Form } from "./components/Form";
 export { default as Footer } from "./components/Footer";
 export { default as Container } from "./components/Container";
-export { default as Input } from "./components/Input";
+// export { default as Input } from "./components/Input";
 export { default as QuickQuery } from "./components/QuickQuery";
+export { default as HoverWindow } from "./components/HoverWindow";
 export type { SelectProps } from "antd/lib/select";
 export type { ColumnsType } from "./components/Table/table";
 export type { ItemType } from "antd/lib/menu/hooks/useItems";
 export type { TableRowSelection } from "antd/lib/table/interface";
 export type { ButtonProps, ButtonShape, ButtonType } from "antd/lib/button";
 export { default as timeTransForm } from "./utils/timeTransForm";
-
+export type { InputRef } from "antd/lib/input/Input";
 export {
   DatePicker,
   Button,
@@ -30,6 +31,7 @@ export {
   Radio,
   Switch,
   InputNumber,
+  Input,
 } from "antd";
 export {
   Calendar,
@@ -60,6 +62,7 @@ export {
   Row,
   Col,
   Collapse,
+  Tag,
 } from "antd";
 export { default as zhCN } from "antd/lib/locale/zh_CN";
 export { default as Icon, createFromIconfontCN } from "@ant-design/icons";

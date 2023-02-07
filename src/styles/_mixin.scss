@@ -1,4 +1,21 @@
 @import "antd/dist/antd.min.css";
+.ant-modal-body {
+  overflow: auto;
+}
+.ant-modal-header,
+.ant-modal-body,
+.ant-modal-footer {
+  padding: 10px;
+}
+.ant-modal-content {
+  .ant-modal-close {
+    .ant-modal-close-x {
+      width: 42px;
+      height: 42px;
+      line-height: 42px;
+    }
+  }
+}
 // @mixin button-size($padding-y, $padding-x, $font-size, $border-raduis) {
 //   padding: $padding-y $padding-x;
 //   font-size: $font-size;
