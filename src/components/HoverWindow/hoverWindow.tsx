@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import classNames from "classnames";
 import { CloseOutlined } from "@ant-design/icons";
 interface IHoverWindowProps {
+  title?: string;
   className?: string;
   height?: any;
   children?: any;
@@ -10,7 +11,8 @@ interface IHoverWindowProps {
   setVisible: any;
 }
 export const HoverWindow: FC<IHoverWindowProps> = (props) => {
-  const { className, height, children, width, visible, setVisible } = props;
+  const { title, className, height, children, width, visible, setVisible } =
+    props;
   const classes = classNames(className, "hover_window");
   const copywidth = width ? width + "px" : "500px";
   const copyHeight = height ? height + "px" : "200px";
@@ -27,6 +29,7 @@ export const HoverWindow: FC<IHoverWindowProps> = (props) => {
         maxHeight: copyHeight,
       }}
     >
+      <span className="title_span_css">{title}</span>
       <CloseOutlined onClick={onCloseByWidow} />
       <div className="hover_children_div">{children}</div>
     </div>

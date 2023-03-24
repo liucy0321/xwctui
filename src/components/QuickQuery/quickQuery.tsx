@@ -12,6 +12,7 @@ interface IQuickQueryProps {
   onClickByTopNow: () => void;
   visible: boolean;
   drawerTitle?: string;
+  minHeight?: number;
 }
 export const QuickQuery: FC<IQuickQueryProps & DrawerProps> = (props) => {
   const {
@@ -23,6 +24,7 @@ export const QuickQuery: FC<IQuickQueryProps & DrawerProps> = (props) => {
     drawerData,
     visible,
     drawerTitle,
+    minHeight,
     onClickByTopNow,
     ...restProps
   } = props;
@@ -36,10 +38,7 @@ export const QuickQuery: FC<IQuickQueryProps & DrawerProps> = (props) => {
   // };
   const copywidth = width ? width + "px" : "300px";
   return (
-    <div
-      className={classes}
-      style={{ maxHeight: height || "calc(100% - 43px)" }}
-    >
+    <div className={classes} style={{ height: height || "calc(100% - 43px)" }}>
       <div style={{ marginRight: visible ? copywidth : "0", height: "100%" }}>
         <p className="top_now_dept">
           {typeof topNode === "string" ? <b>{topNode}</b> : topNode}
@@ -53,13 +52,15 @@ export const QuickQuery: FC<IQuickQueryProps & DrawerProps> = (props) => {
       <Drawer
         title={drawerTitle}
         placement="right"
-        visible={visible}
+        open={visible}
         width={width || 300}
+        height={500}
         mask={false}
         closable={false}
         getContainer={false}
         extra={<Checkbox>显示下级</Checkbox>}
         {...restProps}
+        style={{ minHeight: minHeight + "px" || "0px" }}
       >
         {drawerData}
       </Drawer>

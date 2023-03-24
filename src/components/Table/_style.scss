@@ -69,6 +69,14 @@
     .ant-select {
       width: 100%;
     }
+    .ant-input-number {
+      height: 28px;
+      line-height: 28px;
+      .ant-input-number-input {
+        height: 28px;
+        line-height: 28px;
+      }
+    }
     .add_del_css {
       .anticon {
         width: 20px;
@@ -84,6 +92,37 @@
     //   align-items: flex-start;
     .ant-btn-link {
       padding: 0px 10px;
+    }
+  }
+  .ant-pagination {
+    margin: 10px 0;
+  }
+}
+
+.ant-modal-root {
+  .ant-modal-body {
+    padding: 0px;
+    // table {
+    //   width: 600px;
+    // }
+  }
+  .ant-modal-header {
+    padding: 0 0 10px;
+    margin-bottom: 10px;
+  }
+  .ant-modal-footer {
+    padding: 0px;
+    margin-top: 10px;
+  }
+  .ant-modal-content {
+    padding: 20px !important;
+    .ant-modal-close {
+      top: 10px;
+      .ant-modal-close-x {
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+      }
     }
   }
 }

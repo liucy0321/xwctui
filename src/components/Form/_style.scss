@@ -1,3 +1,6 @@
+.xwct_form_spin {
+  height: auto !important;
+}
 .xwct-form {
   margin-right: -10px;
   margin-bottom: -10px;
@@ -8,8 +11,8 @@
   .ant-form-item-has-error .ant-form-item-row {
     border-color: red !important;
   }
-  // 无边框-->采用小边框
-  .form-item-noborder {
+  // 采用小边框
+  .form-item-littleborder {
     .ant-form-item-row {
       border: none !important;
     }
@@ -22,8 +25,17 @@
       border-color: $_color_primary;
     }
   }
-  // 无边框并且必填
-  .form-item-noborder.ant-form-item-has-error {
+  .form-item-noborder {
+    .ant-form-item-row {
+      border: none !important;
+    }
+    .ant-form-item-row:focus-within .ant-form-item-control,
+    .ant-form-item-row:hover .ant-form-item-control {
+      border-color: $_color_primary;
+    }
+  }
+  // 小边框并且必填
+  .form-item-littleborder.ant-form-item-has-error {
     .ant-form-item-control {
       border-color: red !important;
     }
@@ -34,8 +46,8 @@
       display: none;
     }
   }
-  // 无边框时并且禁用label
-  .form-item-noborder.form-item-disabled {
+  // 小边框时并且禁用label
+  .form-item-littleborder.form-item-disabled {
     .ant-form-item-label,
     .ant-form-item-row,
     .label {
@@ -117,7 +129,7 @@
     input,
     label,
     span {
-      font-size: 12px !important;
+      font-size: 12px;
     }
     .ant-form-item-control {
       flex: 1 1;

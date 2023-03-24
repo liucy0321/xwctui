@@ -1,23 +1,23 @@
 import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 //import WelcomeMDX from '../Welcome/Welcome.stories.mdx'
-import HoverWindow from "./hoverWindow";
+import XwctPopover from "./xwctPopover";
 import { Button } from "antd";
 import Footer from "../Footer/index";
 
 // https://github.com/storybookjs/storybook/issues/15574
 export default {
-  title: "HoverWindow",
-  component: HoverWindow,
+  title: "XwctPopover",
+  component: XwctPopover,
   // parameters: {
   //   docs: {
   //     page: WelcomeMDX
   //   }
   // }
-} as ComponentMeta<typeof HoverWindow>;
+} as ComponentMeta<typeof XwctPopover>;
 
-const Template: ComponentStory<typeof HoverWindow> = (args) => (
-  <HoverWindow {...args} />
+const Template: ComponentStory<typeof XwctPopover> = (args) => (
+  <XwctPopover {...args} />
 );
 export const ADefault = Template.bind({});
 ADefault.args = {
@@ -68,9 +68,20 @@ export const BButtonWithSize = () => {
   }, []);
   return (
     <>
-      <HoverWindow visible={visible} setVisible={setVisible} title="标题">
-        fffffffffffff
-      </HoverWindow>
+      <XwctPopover
+        visible={visible}
+        setVisible={setVisible}
+        placement="topRight"
+        content={
+          <>
+            <p>23</p>
+            <p>32</p>
+            <p>fffffffffffffff</p>
+          </>
+        }
+      >
+        <Button onClick={() => setVisible(true)}>fdjkfd</Button>
+      </XwctPopover>
       <Footer footerDom={footerDom} />
     </>
   );

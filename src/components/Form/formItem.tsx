@@ -4,11 +4,20 @@ import classNames from "classnames";
 import { Form as AntForm, FormItemProps as AntFormItemProps } from "antd";
 const { Item } = AntForm;
 interface IFormItem {
-  width?: "half" | "quarter" | "all" | "double" | "halfAll" | "normal";
-  /**没有边框 */
-  noBorder?: boolean;
+  width?:
+    | "half"
+    | "quarter"
+    | "threeQuarter"
+    | "all"
+    | "double"
+    | "halfAll"
+    | "normal";
+  /**小边框 */
+  littleBorder?: boolean;
   /**没有label */
   noLabel?: boolean;
+  /**没有边框 */
+  noBorder?: boolean;
   /**是否禁用 */
   disabled?: boolean;
 }
@@ -19,6 +28,7 @@ export const FormItem: FC<IFormItemProps> = (props) => {
     children,
     width,
     className,
+    littleBorder,
     noBorder,
     noLabel,
     disabled,
@@ -30,6 +40,8 @@ export const FormItem: FC<IFormItemProps> = (props) => {
         return "16.666666% ";
       case "quarter":
         return "25%";
+      case "threeQuarter":
+        return "75%";
       case "all":
         return "100%";
       case "double":
@@ -41,6 +53,7 @@ export const FormItem: FC<IFormItemProps> = (props) => {
     }
   }
   const classes = classNames(className, {
+    "form-item-littleborder": littleBorder,
     "form-item-noborder": noBorder,
     "form-item-noLabel": noLabel,
     "form-item-disabled": disabled,

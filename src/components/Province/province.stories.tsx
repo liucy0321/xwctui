@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { ComponentMeta } from "@storybook/react";
-import { Input } from "./input";
+import { Province } from "./province";
 export default {
-  title: "Input",
-  id: "Input",
-  component: Input,
+  title: "Province",
+  id: "Province",
+  component: Province,
   decorators: [
     (Story) => (
       <div style={{ width: "350px" }}>
@@ -12,7 +12,7 @@ export default {
       </div>
     ),
   ],
-} as unknown as ComponentMeta<typeof Input>;
+} as unknown as ComponentMeta<typeof Province>;
 
 // const Template: ComponentStory<typeof Input> = (args) => <Input {...args} />;
 // export const ADefault = Template.bind({});
@@ -47,13 +47,10 @@ export const EPandInput = () => {
   }, []);
   return (
     <>
-      <Input
-        defaultValue="prepend text"
-        wrappedComponentRef={(e) => (inputRef.current = e)}
-      />
+      <Province />
       {/* <Input defaultValue="google" /> */}
     </>
   );
 };
 
-EPandInput.storyName = "带前后缀的 Input";
+EPandInput.storyName = "省市区";

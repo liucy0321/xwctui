@@ -46,7 +46,7 @@ export const DraggableBodyRow = (props: DraggableBodyRowProps) => {
       const {
         id: dragId,
         parentId: dragParentId,
-        index: dragPreIndex,
+        // index: dragPreIndex,
         isGroup,
       } = monitor.getItem() || {};
 

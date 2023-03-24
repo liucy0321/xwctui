@@ -126,7 +126,7 @@ export const CFullForm = (args) => {
   return (
     <Form form={form} name="finance-in-list">
       <SearchLeft>
-        <Item label="Username" name="username" width="half">
+        <Item label="Username" name="username" width="half" noBorder>
           <Input allowClear autoComplete="off" />
         </Item>
         <Item>

@@ -32,11 +32,17 @@ export interface ISumTableProps {
 export const TableSummary: FC<ISumTableProps> = (sumProps) => {
   const [summary, setSummary] = useState<any[]>([]);
   const { summaryConfig, columns, rowSelection, dataSource } = sumProps;
-  let currentColumns: any[] = JSON.parse(JSON.stringify(columns));
-  if (rowSelection) {
-    let copyArr: any[] = [{}];
-    currentColumns = copyArr.concat(currentColumns);
-  }
+  const [currentColumns, setCurrentColumns] = useState<any[]>([]);
+  useEffect(() => {
+    if (columns && columns.length > 0) {
+      let copyColumns: any[] = JSON.parse(JSON.stringify(columns));
+      if (rowSelection) {
+        let copyArr: any[] = [{}];
+        copyColumns = copyArr.concat(copyColumns);
+      }
+      setCurrentColumns(copyColumns);
+    }
+  }, [columns, rowSelection]);
 
   /**
    * 数表格冒泡合计
@@ -45,7 +51,7 @@ export const TableSummary: FC<ISumTableProps> = (sumProps) => {
     for (var i = 0; i < data?.length; i++) {
       for (let item in strArray) {
         if (data?.[i]?.[item]) {
-          strArray[item] += data[i][item];
+          strArray[item] += parseFloat(data[i][item]);
         }
       }
       if (

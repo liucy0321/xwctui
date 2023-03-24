@@ -47,7 +47,7 @@ export const Input = (props: any) => {
   const { ref, ...restProps } = props;
 
   // 暴露
-  return <AntInput ref={inputRef} {...restProps} />;
+  return <AntInput ref={inputRef} {...restProps} autoComplete="off" />;
 };
 export default Input;
 // Input.Group = (Vue) => {

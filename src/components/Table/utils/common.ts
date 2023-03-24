@@ -31,16 +31,44 @@ export function clone(data) {
     return new data.constructor(data);
   }
 }
+// 判断是否为null 或者 undefined 或者 空字符
+export function isNull( str ){
+  if ( typeof str === "undefined" || str === null|| str === "" ) return true;
+
+      var regu = "^[ ]+$";
+   
+      var re = new RegExp(regu);
+   
+      return re.test(str);
+   
+}  
 // 表格列数字千分位
 export function thousandth(num) {
   if (!(/^[-\d]\d*$/.test(num) || /^[-\d]\d*\.\d*$/.test(num))) {
     return num;
   }
-  let newNum = (num < 0 ? -num : num) + "";
+  let newNum= absString(num);
+
+  // let newNum = (num < 0 ? -num : num)+'' ;
   const reg = new RegExp("\\B(?<!(\\.\\d+))(?=(\\d{3})+\\b)", "g"); // return (num < 0 ? "-" : "") + newNum.replace(/(?=(?!^)(?:\d{3})+(?:\.|$))(\d{3}(\.\d+$)?)/g, ',$1');
   return (num < 0 ? "-" : "") + newNum.replace(reg, ","); // 小数位不进行千分位。
 }
-export const getParam = (data, dragId, dropId, parentChildSign) => {
+
+/**
+ * 负数转正数（保留小数位）
+ * @param n 
+ * @returns 
+ */
+function absString(n) {
+  let numberString = n.toString();
+  if (numberString[0] === '-') {
+    return numberString.substring(1);
+  }
+  else {
+    return numberString;
+  }
+}
+export const getParam = (data, dragId, dropId, childSign) => {
   let obj: any = {
     dragRow: undefined, // 拖拽子节点
     dropRow: undefined, // 放置子节点
@@ -53,7 +81,7 @@ export const getParam = (data, dragId, dropId, parentChildSign) => {
   // let dragIndex, dropIndex;
   // let dragParentIndex, dropParentIndex; // 拖拽子节点的父节点索引
 
-  let idSign = parentChildSign?.[0];
+  let idSign = childSign;
   for (let i = 0; i < data.length; i++) {
     // 父节点拖拽
     let parentDom = data[i];
@@ -126,9 +154,9 @@ function findParent(data, target, result, idSign) {
   //走到这说明没找到目标
   return false;
 }
-export const findFromData = (data, id, parentChildSign) => {
+export const findFromData = (data, id, childSign) => {
   let row, index, parentIndex;
-  let idSign = parentChildSign?.[0];
+  let idSign = childSign;
   for (let i = 0; i < data.length; i++) {
     // 父节点拖拽
     let parentDom = data[i];

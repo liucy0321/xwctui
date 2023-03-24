@@ -16,6 +16,9 @@ interface IBtn {
   text: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;
+  ifHide?: boolean;
+  danger?: boolean;
+  ghost?: boolean;
   onClick:
     | ((event: React.MouseEvent<HTMLElement, MouseEvent>) => void)
     | undefined;
@@ -44,18 +47,31 @@ export const XwFooter: FC<IProps> = (props) => {
         <div className={classes}>
           {footerDom.map((item, index) => {
             if (item.DOMType === "button") {
-              const { type, size, loading, disabled, onClick } = item;
+              const {
+                type,
+                size,
+                loading,
+                disabled,
+                ifHide,
+                danger,
+                ghost,
+                onClick,
+              } = item;
               return (
-                <Button
-                  key={index}
-                  type={type}
-                  loading={loading}
-                  disabled={disabled}
-                  size={size}
-                  onClick={onClick}
-                >
-                  {item.text}
-                </Button>
+                !ifHide && (
+                  <Button
+                    key={index}
+                    type={type}
+                    loading={loading}
+                    disabled={disabled}
+                    size={size}
+                    danger={danger}
+                    ghost={ghost}
+                    onClick={onClick}
+                  >
+                    {item.text}
+                  </Button>
+                )
               );
             }
             if (item.DOMType === "pagination") {
