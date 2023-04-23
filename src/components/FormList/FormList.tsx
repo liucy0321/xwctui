@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Descriptions as AntDescriptions, DescriptionsProps } from "antd";
 import classNames from "classnames";
 import FormItem from "./FormItem";

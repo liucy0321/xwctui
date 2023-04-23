@@ -16,6 +16,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import type { ISummaryConfig } from "./tableSummary";
 import { clone, thousandth } from "./utils/common";
 import { DraggableBodyRow } from "./components/row";
+// 拖拽
+import ResizableTable from "./ResizableTable";
 import update from "immutability-helper";
 import {
   PlusOutlined,
@@ -536,7 +538,7 @@ export const Table: FC<IProps<any>> = (props) => {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <AntTable
+        <ResizableTable
           bordered
           columns={tableCode ? currentColumns?.current : copyColumns}
           rowKey={rowKey}

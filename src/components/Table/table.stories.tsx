@@ -80,19 +80,19 @@ const tableData = [
     remark: null,
   },
 ];
-const rowSelection = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-  getCheckboxProps: (record: any) => ({
-    disabled: record?.name === "Disabled User", // Column configuration not to be checked
-    name: record?.name,
-  }),
-};
+// const rowSelection = {
+//   onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+//     console.log(
+//       `selectedRowKeys: ${selectedRowKeys}`,
+//       "selectedRows: ",
+//       selectedRows
+//     );
+//   },
+//   getCheckboxProps: (record: any) => ({
+//     disabled: record?.name === "Disabled User", // Column configuration not to be checked
+//     name: record?.name,
+//   }),
+// };
 export const ADefaultTable = (args) => {
   const [data, setData] = useState(tableData);
   const onMoveRow = useCallback((data) => {
