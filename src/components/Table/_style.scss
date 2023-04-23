@@ -14,7 +14,7 @@
     .ant-table-tbody > tr > td,
     .ant-table-summary > tr > td,
     .ant-table-footer {
-      padding: 3px 10px;
+      padding: 3px 10px !important;
     }
 
     .ant-table-tbody > tr > td,
@@ -95,7 +95,7 @@
     }
   }
   .ant-pagination {
-    margin: 10px 0;
+    margin: 10px 0 !important;
   }
 }
 
@@ -125,4 +125,186 @@
       }
     }
   }
+}
+/* 显示拖拽样式 */
+.react-resizable {
+  position: relative;
+  background-clip: padding-box;
+}
+
+/* 显示拖拽手势 */
+.react-resizable-handle {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  bottom: 0;
+  right: -5px;
+  cursor: col-resize;
+  background-image: none;
+  z-index: 1;
+}
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-content
+  > table
+  > thead
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-header
+  > table
+  > thead
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-body
+  > table
+  > thead
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-summary
+  > table
+  > thead
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-content
+  > table
+  > tbody
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-header
+  > table
+  > tbody
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-body
+  > table
+  > tbody
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-summary
+  > table
+  > tbody
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-content
+  > table
+  > tbody
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-header
+  > table
+  > tbody
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-body
+  > table
+  > tbody
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-summary
+  > table
+  > tbody
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-content
+  > table
+  > tfoot
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-header
+  > table
+  > tfoot
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-body
+  > table
+  > tfoot
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-summary
+  > table
+  > tfoot
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-content
+  > table
+  > tfoot
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-header
+  > table
+  > tfoot
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-body
+  > table
+  > tfoot
+  > tr
+  > td,
+:where(.css-dev-only-do-not-override-htwhyh).ant-table-wrapper
+  .ant-table.ant-table-bordered
+  > .ant-table-container
+  > .ant-table-summary
+  > table
+  > tfoot
+  > tr
+  > td {
+  padding: 3px 10px !important;
+}
+.ant-table-measure-row {
+  visibility: collapse;
 }

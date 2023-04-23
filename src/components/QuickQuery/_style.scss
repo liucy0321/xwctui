@@ -35,4 +35,9 @@
       }
     }
   }
+  .hide-right-css {
+    .ant-drawer-content-wrapper {
+      display: none;
+    }
+  }
 }

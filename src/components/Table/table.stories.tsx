@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { ComponentMeta } from "@storybook/react";
 import Table from "./index";
+import { Button } from "antd";
 import { ColumnsType } from "./table";
 
 export default {
@@ -97,17 +98,27 @@ export const ADefaultTable = (args) => {
   const onMoveRow = useCallback((data) => {
     setData(data);
   }, []);
+  const columnsRender = {
+    materialSelName: (text, record, index) => {
+      return (
+        <Button type="link" style={{ padding: 0 }}>
+          {text}
+        </Button>
+      );
+    },
+  };
   return (
     <Table
       columns={columns}
       dataSource={data}
       rowKey="materialSelDetailId"
       indentTitle="positionLevel"
-      tableCode="ownerMaterial"
+      tableCode="project-material-list"
       hideDelIcon
       onMoveRow={onMoveRow}
       expandIconColumnIndex={3}
       onAddAndDelHandle={() => {}}
+      columnsRender={columnsRender}
       // summaryConfig={[
       //   {
       //     type: "total",

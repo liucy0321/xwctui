@@ -19,7 +19,7 @@ export interface ISearchRightItem {
   /**按钮禁用权限 */
   disBtnRoutes?: string[];
   /**隐藏默认按钮 */
-  hideDefBtn?: boolean;
+  showDefBtn?: boolean;
   /**添加的额外btn */
   otherBtn?: IOtherBtnProps[];
 }
@@ -29,7 +29,7 @@ export const SearchRight: FC<ISearchRightItem> = (props) => {
     onResetHandle,
     children,
     disBtnRoutes,
-    hideDefBtn,
+    showDefBtn,
     otherBtn,
   } = props;
   const menu = (
@@ -60,14 +60,14 @@ export const SearchRight: FC<ISearchRightItem> = (props) => {
   } else {
     return (
       <div className="search-right">
-        {!hideDefBtn ? (
+        {showDefBtn ? (
           <>
             <Button
               type="primary"
               onClick={onSearchHandle}
               disabled={disBtnRoutes?.indexOf("query") === 0}
             >
-              查询下
+              查询
             </Button>
             <Button
               type="default"

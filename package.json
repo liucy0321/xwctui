@@ -1,6 +1,6 @@
 {
   "name": "xwctui",
-  "version": "1.4.5",
+  "version": "1.5.2",
   "description": "React components library",
   "author": "Liu ChenYue",
   "private": false,
@@ -27,6 +27,7 @@
     "dist/index.css"
   ],
   "dependencies": {
+    "@dnd-kit/sortable": "^7.0.2",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/react-fontawesome": "^0.2.0",

@@ -183,6 +183,7 @@ export const TableColumns: FC<IColumnsProps> = (colProps) => {
         open={open}
         width={800}
         getContainer={false}
+        maskClosable={false}
         className="col_setting_modal"
         footer={
           <>
@@ -197,6 +198,7 @@ export const TableColumns: FC<IColumnsProps> = (colProps) => {
       >
         <DndProvider backend={HTML5Backend}>
           <XwTable
+            loading={loading}
             scroll={{ x: 600, y: 480 }}
             bordered
             columns={dynamicColumns}

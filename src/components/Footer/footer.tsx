@@ -29,7 +29,7 @@ interface IDropdown {
 }
 export interface IFooterDom extends Partial<IPagination & IBtn & IDropdown> {
   DOMType?: "button" | "pagination" | "dropdown";
-  render?: () => ReactElement;
+  render?: any;
 }
 interface IProps {
   footerDom?: IFooterDom[] | null;
@@ -100,6 +100,16 @@ export const XwFooter: FC<IProps> = (props) => {
                 >
                   {item.text}
                 </Dropdown.Button>
+              );
+            } else if (item?.render) {
+              return (
+                <div
+                  key={index}
+                  className="mr10"
+                  style={{ display: "inline-block" }}
+                >
+                  {item?.render}
+                </div>
               );
             }
             return null;

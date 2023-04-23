@@ -6,6 +6,7 @@ import {
   Button,
   Popconfirm,
   Tooltip,
+  message,
 } from "antd";
 import { DndProvider } from "react-dnd";
 import { ColumnType } from "antd/lib/table";
@@ -63,15 +64,14 @@ export interface IProps<RecordType>
   /**隐藏删除icon */
   hideDelIcon?: boolean;
   /**是否显示动态表头配置 */
-  showColumnDynamic?: boolean;
-  /**跳转方法汇总 */
-  thisFunByCol?: (code?: string, record?: any) => void;
+  columnsRender?: any;
   /**表格刷新 */
   onReload?: () => void;
   /**表格Code */
   tableCode?: string;
   /**是否显示小计或总计 */
   summaryConfig?: ISummaryConfig[];
+  /**小计总计固定 */
   summaryFixed?: boolean;
   /**父id标识 */
   parentChildSign?: string[];
@@ -120,7 +120,6 @@ export const Table: FC<IProps<any>> = (props) => {
   const {
     children,
     summaryConfig,
-    showColumnDynamic,
     tableCode,
     columns,
     rowSelection,
@@ -135,13 +134,31 @@ export const Table: FC<IProps<any>> = (props) => {
     onMoveRow,
     rowKey,
     onReload,
-    thisFunByCol,
+    columnsRender,
     ...restProps
   } = props;
   const [open, setOpen] = useState(false);
   const [dynamicData, setDynamicData] = useState([]);
   let currentColumns = useRef<any>([]);
-  let copyColumns = clone(columns);
+  let copyColumns = clone(columns) || [];
+  /**
+   * 所有展示增加省略号
+   */
+  for (let i = 0; i < copyColumns?.length; i++) {
+    if (
+      !copyColumns[i]?.ellipsis &&
+      copyColumns[i]?.title !== "操作" &&
+      copyColumns[i]?.title !== "状态"
+    ) {
+      copyColumns[i] = {
+        ...copyColumns[i],
+        ellipsis: true,
+      };
+    }
+  }
+  /**
+   * 增加必填标识
+   */
   for (let index in copyColumns) {
     const { required, title } = copyColumns[index];
     if (required) {
@@ -245,11 +262,11 @@ export const Table: FC<IProps<any>> = (props) => {
    * 初始化
    */
   useEffect(() => {
-    if (showColumnDynamic && tableCode) {
+    if (tableCode) {
       selectColData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showColumnDynamic, tableCode]);
+  }, [tableCode]);
   /**
    * 根据接口获取显示动态列
    */
@@ -270,12 +287,21 @@ export const Table: FC<IProps<any>> = (props) => {
                   </Button>
                 </Tooltip>
               ),
-              width: 50,
+              width: "50px",
               fixed: "left",
               render: (text, record, index) => `${index + 1}`,
             },
           ];
-
+          let copyColumnsRender: any = { ...columnsRender };
+          for (let item in copyColumnsRender) {
+            let itemList = item.split(",");
+            if (itemList.length > 1) {
+              for (let i = 0; i < itemList.length; i++) {
+                copyColumnsRender[itemList[i]] = copyColumnsRender[item];
+              }
+              delete copyColumnsRender[item];
+            }
+          }
           for (let i = 0; i < copyData?.length; i++) {
             // 左固定或者右固定
             let ifFixed: any = null;
@@ -291,23 +317,7 @@ export const Table: FC<IProps<any>> = (props) => {
               ellipsis: true,
               width: copyData?.[i]?.columnWidth,
               fixed: ifFixed,
-              render: (text, record, index) => {
-                if (copyData?.[i]?.jumpLink) {
-                  return (
-                    text && (
-                      <Button
-                        type="link"
-                        style={{ padding: 0 }}
-                        onClick={() => thisFunByCol?.(tableCode, record)}
-                      >
-                        {text}
-                      </Button>
-                    )
-                  );
-                } else {
-                  return text;
-                }
-              },
+              render: copyColumnsRender?.[copyData?.[i]?.columnName],
             };
 
             currentColumns.current.push(column);
@@ -321,23 +331,12 @@ export const Table: FC<IProps<any>> = (props) => {
           //     </Button>
           //   );
           // };
+        } else {
+          message.warning(response?.data?.msg || "网络异常，请联系管理员！");
         }
-        // else {
-        //   message.warning(response?.data?.msg);
-        // }
       })
       .catch((error) => {});
   };
-  // // 表格动态列配置
-  // copyColumns[0].title = () => {
-  //   return (
-  //     <Tooltip title="列设置">
-  //       <Button type="link">
-  //         <MenuFoldOutlined onClick={showDrawer} />
-  //       </Button>
-  //     </Tooltip>
-  //   );
-  // };
   const classes = classNames("xwct-table", className);
   // 拖拽
   const findRow = (id) => {
@@ -539,7 +538,7 @@ export const Table: FC<IProps<any>> = (props) => {
       <DndProvider backend={HTML5Backend}>
         <AntTable
           bordered
-          columns={showColumnDynamic ? currentColumns?.current : copyColumns}
+          columns={tableCode ? currentColumns?.current : copyColumns}
           rowKey={rowKey}
           // columns={copyColumns}
           components={onMoveRow ? components : undefined}
@@ -553,9 +552,7 @@ export const Table: FC<IProps<any>> = (props) => {
             summaryConfig ? (
               <AntTable.Summary fixed>
                 <TableSummary
-                  columns={
-                    showColumnDynamic ? currentColumns?.current : copyColumns
-                  }
+                  columns={tableCode ? currentColumns?.current : copyColumns}
                   summaryConfig={summaryConfig}
                   rowSelection={rowSelection}
                   dataSource={dataSource}
