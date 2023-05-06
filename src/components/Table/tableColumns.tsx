@@ -54,8 +54,9 @@ export const TableColumns: FC<IColumnsProps> = (colProps) => {
         return (
           <>
             <InputNumber
-              min={0}
+              min={30}
               max={260}
+              precision={0}
               value={value}
               onBlur={(e) =>
                 onChangeByDynamic("columnWidth", e.currentTarget.value, index)
@@ -207,6 +208,7 @@ export const TableColumns: FC<IColumnsProps> = (colProps) => {
             onMoveRow={onMoveRow}
             rowKey="columnName"
             parentChildSign={["columnName"]}
+            ifColumnDrag={false}
           />
         </DndProvider>
       </Modal>

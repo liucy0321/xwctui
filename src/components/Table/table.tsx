@@ -77,6 +77,8 @@ export interface IProps<RecordType>
   summaryFixed?: boolean;
   /**父id标识 */
   parentChildSign?: string[];
+  /**表格列拖拽 */
+  ifColumnDrag?: boolean;
   /**表格行拖拽 */
   onMoveRow?: (data: any, dragParentIndex?: any, operateType?: string) => void;
   /**表格列编辑事件 */
@@ -92,6 +94,10 @@ export interface IProps<RecordType>
   className?: string;
   /**树形层级level名称 */
   indentTitle?: string;
+  /**按钮权限 */
+  btnAuth?: any;
+  /**序号宽度 */
+  orderWidth?: number;
 }
 export interface DraggableBodyRowProps
   extends React.HTMLAttributes<HTMLTableRowElement> {
@@ -137,6 +143,9 @@ export const Table: FC<IProps<any>> = (props) => {
     rowKey,
     onReload,
     columnsRender,
+    ifColumnDrag,
+    btnAuth,
+    orderWidth,
     ...restProps
   } = props;
   const [open, setOpen] = useState(false);
@@ -204,39 +213,6 @@ export const Table: FC<IProps<any>> = (props) => {
     }
   }
   /**
-   * 新增删除按钮
-   */
-  if (onAddAndDelHandle && copyColumns) {
-    // 给第一位添加
-    copyColumns.unshift({
-      width: 50,
-      fixed: "left",
-      render: (text, record, index) => (
-        <div className="add_del_css">
-          <PlusOutlined
-            // disabled={hideAddIcon}
-            style={{ display: hideAddIcon ? "none" : "block" }}
-            onClick={() => {
-              onAddAndDelHandle("add", index, record);
-            }}
-          />
-          <Popconfirm
-            title="是否确定删除?"
-            cancelText="否"
-            okText="是"
-            onConfirm={() => {
-              onAddAndDelHandle("del", index, record);
-            }}
-          >
-            <MinusOutlined
-              style={{ display: hideDelIcon ? "none" : "block" }}
-            />
-          </Popconfirm>
-        </div>
-      ),
-    });
-  }
-  /**
    * 树形根据层级增加缩进
    */
   if (indentTitle) {
@@ -269,12 +245,45 @@ export const Table: FC<IProps<any>> = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableCode]);
+  const unshiftAddAndDel = () => {
+    // 给第一位添加
+    copyColumns.unshift({
+      width: 50,
+      fixed: "left",
+      render: (text, record, index) => (
+        <div className="add_del_css">
+          <PlusOutlined
+            // disabled={hideAddIcon}
+            style={{ display: hideAddIcon ? "none" : "block" }}
+            onClick={() => {
+              onAddAndDelHandle && onAddAndDelHandle("add", index, record);
+            }}
+          />
+          <Popconfirm
+            title="是否确定删除?"
+            cancelText="否"
+            okText="是"
+            onConfirm={() => {
+              onAddAndDelHandle && onAddAndDelHandle("del", index, record);
+            }}
+          >
+            <MinusOutlined
+              style={{ display: hideDelIcon ? "none" : "block" }}
+            />
+          </Popconfirm>
+        </div>
+      ),
+    });
+  };
   /**
    * 根据接口获取显示动态列
    */
   const selectColData = () => {
     axios
-      .post("/mapi/oper/tableConfig/query", { tableCode })
+      .post("/mapi/oper/tableConfig/query", {
+        tableCode,
+        fieldAuthList: btnAuth,
+      })
       .then((response) => {
         if (response?.data?.isSuccess) {
           let copyData: any = [...response?.data?.data];
@@ -289,7 +298,7 @@ export const Table: FC<IProps<any>> = (props) => {
                   </Button>
                 </Tooltip>
               ),
-              width: "50px",
+              width: orderWidth || 50,
               fixed: "left",
               render: (text, record, index) => `${index + 1}`,
             },
@@ -319,26 +328,93 @@ export const Table: FC<IProps<any>> = (props) => {
               ellipsis: true,
               width: copyData?.[i]?.columnWidth,
               fixed: ifFixed,
+              thousandth: copyData?.[i]?.thousandth,
+              toFixedNum: parseInt(copyData?.[i]?.toFixedNum),
               render: copyColumnsRender?.[copyData?.[i]?.columnName],
             };
 
             currentColumns.current.push(column);
           }
           currentColumns.current = currentColumns.current.concat(copyColumns);
-          // 表格动态列配置
-          // currentColumns.current[0].title = () => {
-          //   return (
-          //     <Button type="link">
-          //       <MenuFoldOutlined onClick={showDrawer} />
-          //     </Button>
-          //   );
-          // };
+          // 表格列数字小数点
+          // 表格列数字千分位
+          for (let i in currentColumns.current) {
+            const colNum = currentColumns.current[i]?.toFixedNum;
+            if (
+              currentColumns.current[i]?.toFixedNum &&
+              currentColumns.current[i]?.thousandth &&
+              !currentColumns.current[i]?.render
+            ) {
+              currentColumns.current[i] = {
+                ...currentColumns.current[i],
+                render: (text) =>
+                  !isNull(text)
+                    ? thousandth(parseFloat(text)?.toFixed(colNum))
+                    : "",
+              };
+            } else if (
+              currentColumns.current[i]?.toFixedNum &&
+              !currentColumns.current[i]?.render
+            ) {
+              currentColumns.current[i] = {
+                ...currentColumns.current[i],
+                render: (text) =>
+                  !isNull(text) ? parseFloat(text)?.toFixed(colNum) : "",
+              };
+            } else if (
+              currentColumns.current[i]?.thousandth &&
+              !currentColumns.current[i]?.render
+            ) {
+              currentColumns.current[i] = {
+                ...currentColumns.current[i],
+                render: (text) =>
+                  !isNull(text) ? thousandth(parseFloat(text)) : "",
+              };
+            }
+          }
+          if (onAddAndDelHandle) {
+            currentColumns.current.unshift({
+              width: 50,
+              fixed: "left",
+              render: (text, record, index) => (
+                <div className="add_del_css">
+                  <PlusOutlined
+                    // disabled={hideAddIcon}
+                    style={{ display: hideAddIcon ? "none" : "block" }}
+                    onClick={() => {
+                      onAddAndDelHandle &&
+                        onAddAndDelHandle("add", index, record);
+                    }}
+                  />
+                  <Popconfirm
+                    title="是否确定删除?"
+                    cancelText="否"
+                    okText="是"
+                    onConfirm={() => {
+                      onAddAndDelHandle &&
+                        onAddAndDelHandle("del", index, record);
+                    }}
+                  >
+                    <MinusOutlined
+                      style={{ display: hideDelIcon ? "none" : "block" }}
+                    />
+                  </Popconfirm>
+                </div>
+              ),
+            });
+          }
         } else {
           message.warning(response?.data?.msg || "网络异常，请联系管理员！");
         }
       })
       .catch((error) => {});
   };
+  /**
+   * 新增删除按钮
+   */
+  if (onAddAndDelHandle && copyColumns && !tableCode) {
+    unshiftAddAndDel();
+  }
   const classes = classNames("xwct-table", className);
   // 拖拽
   const findRow = (id) => {
@@ -538,55 +614,107 @@ export const Table: FC<IProps<any>> = (props) => {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <ResizableTable
-          bordered
-          columns={tableCode ? currentColumns?.current : copyColumns}
-          rowKey={rowKey}
-          // columns={copyColumns}
-          components={onMoveRow ? components : undefined}
-          className={classes}
-          scroll={{ x: 1000, y: 500 }}
-          pagination={false}
-          rowSelection={rowSelection}
-          dataSource={dataSource}
-          indentSize={indentSize}
-          summary={() =>
-            summaryConfig ? (
-              <AntTable.Summary fixed>
-                <TableSummary
-                  columns={tableCode ? currentColumns?.current : copyColumns}
-                  summaryConfig={summaryConfig}
-                  rowSelection={rowSelection}
-                  dataSource={dataSource}
+        {ifColumnDrag === false ? (
+          <AntTable
+            bordered
+            columns={tableCode ? currentColumns?.current : copyColumns}
+            rowKey={rowKey}
+            // columns={copyColumns}
+            components={onMoveRow ? components : undefined}
+            className={classes}
+            scroll={{ x: 1000, y: 500 }}
+            pagination={false}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            indentSize={indentSize}
+            summary={() =>
+              summaryConfig ? (
+                <AntTable.Summary fixed>
+                  <TableSummary
+                    columns={tableCode ? currentColumns?.current : copyColumns}
+                    summaryConfig={summaryConfig}
+                    rowSelection={rowSelection}
+                    dataSource={dataSource}
+                  />
+                </AntTable.Summary>
+              ) : null
+            }
+            locale={{
+              emptyText: (
+                <Empty
+                  description="暂无数据"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
                 />
-              </AntTable.Summary>
-            ) : null
-          }
-          locale={{
-            emptyText: (
-              <Empty
-                description="暂无数据"
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-              />
-            ),
-          }}
-          onRow={
-            onMoveRow
-              ? (record, index) => {
-                  const attr = {
-                    index,
-                    record,
-                    data: dataSource,
-                    parentchildsign: parentChildSign,
-                    moveRow: moveRow,
-                    findRow: findRow,
-                  };
-                  return attr as DraggableBodyRowProps;
-                }
-              : undefined
-          }
-          {...restProps}
-        />
+              ),
+            }}
+            onRow={
+              onMoveRow
+                ? (record, index) => {
+                    const attr = {
+                      index,
+                      record,
+                      data: dataSource,
+                      parentchildsign: parentChildSign,
+                      moveRow: moveRow,
+                      findRow: findRow,
+                    };
+                    return attr as DraggableBodyRowProps;
+                  }
+                : undefined
+            }
+            {...restProps}
+          />
+        ) : (
+          <ResizableTable
+            bordered
+            columns={tableCode ? currentColumns?.current : copyColumns}
+            rowKey={rowKey}
+            // columns={copyColumns}
+            components={onMoveRow ? components : undefined}
+            className={classes}
+            scroll={{ x: 1000, y: 500 }}
+            pagination={false}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            indentSize={indentSize}
+            summary={() =>
+              summaryConfig ? (
+                <AntTable.Summary fixed>
+                  <TableSummary
+                    columns={tableCode ? currentColumns?.current : copyColumns}
+                    summaryConfig={summaryConfig}
+                    rowSelection={rowSelection}
+                    dataSource={dataSource}
+                  />
+                </AntTable.Summary>
+              ) : null
+            }
+            locale={{
+              emptyText: (
+                <Empty
+                  description="暂无数据"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
+              ),
+            }}
+            onRow={
+              onMoveRow
+                ? (record, index) => {
+                    const attr = {
+                      index,
+                      record,
+                      data: dataSource,
+                      parentchildsign: parentChildSign,
+                      moveRow: moveRow,
+                      findRow: findRow,
+                    };
+                    return attr as DraggableBodyRowProps;
+                  }
+                : undefined
+            }
+            {...restProps}
+          />
+        )}
       </DndProvider>
       <TableColumns
         open={open}

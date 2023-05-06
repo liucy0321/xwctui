@@ -113,7 +113,6 @@ export const ADefaultTable = (args) => {
       dataSource={data}
       rowKey="materialSelDetailId"
       indentTitle="positionLevel"
-      tableCode="project-material-list"
       hideDelIcon
       onMoveRow={onMoveRow}
       expandIconColumnIndex={3}

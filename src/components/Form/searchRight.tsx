@@ -1,6 +1,7 @@
 import React, { FC, ReactNode } from "react";
 
 import { Button, Dropdown, Menu } from "antd";
+import classNames from "classnames";
 
 import { EllipsisOutlined } from "@ant-design/icons";
 const { Item } = Menu;
@@ -22,6 +23,8 @@ export interface ISearchRightItem {
   showDefBtn?: boolean;
   /**添加的额外btn */
   otherBtn?: IOtherBtnProps[];
+  className?: string;
+  style?: any;
 }
 export const SearchRight: FC<ISearchRightItem> = (props) => {
   const {
@@ -31,7 +34,10 @@ export const SearchRight: FC<ISearchRightItem> = (props) => {
     disBtnRoutes,
     showDefBtn,
     otherBtn,
+    className,
+    style,
   } = props;
+  const classes = classNames(className, "search-right");
   const menu = (
     <Menu>
       {otherBtn?.map((item, index) => (
@@ -46,7 +52,7 @@ export const SearchRight: FC<ISearchRightItem> = (props) => {
   );
   if (children) {
     return (
-      <div className="search-right">
+      <div className={classes} style={style}>
         {children}
         {otherBtn ? (
           <Dropdown placement="bottomRight" overlay={menu} trigger={["click"]}>
@@ -59,7 +65,7 @@ export const SearchRight: FC<ISearchRightItem> = (props) => {
     );
   } else {
     return (
-      <div className="search-right">
+      <div className={classes} style={style}>
         {showDefBtn ? (
           <>
             <Button

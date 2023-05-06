@@ -16,7 +16,7 @@ const ResizableTitle = (props: any) => {
   }
   return (
     <Resizable
-      width={width}
+      width={parseInt(width)}
       height={0}
       handle={
         <span
@@ -53,9 +53,8 @@ const ResizableTable = (props: IProps<any>) => {
       let array2 = JSON.parse(JSON.stringify(indexarray));
       array2.push(index);
       col.onHeaderCell = (column: { width: any }) => ({
-        width: column.width ?? 0,
+        width: parseInt(column.width) ?? 0,
         onResize: handleResize(index, array2),
-        onmouseup: handleResize(index, array2),
       });
 
       if (col.children?.length) {
@@ -66,9 +65,9 @@ const ResizableTable = (props: IProps<any>) => {
   const handleResize =
     (index: number, indexarray: number[]) => (e: any, a: { size: any }) => {
       const { size } = a;
-      let nextColumns = JSON.parse(JSON.stringify(column));
+      const nextColumns = [...column];
       const width = size?.width ?? 100;
-      setNewColumnWidth(nextColumns, indexarray, width, []);
+      setNewColumnWidth(nextColumns, indexarray, parseInt(width), []);
       setcolumn(nextColumns);
     };
   const setNewColumnWidth = (
@@ -97,7 +96,7 @@ const ResizableTable = (props: IProps<any>) => {
     }
   };
 
-  const newcolumn = JSON.parse(JSON.stringify(column));
+  const newcolumn = [...column];
   setNewColumnCell(newcolumn, []);
   return (
     <AntTable

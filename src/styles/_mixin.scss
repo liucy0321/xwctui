@@ -23,6 +23,10 @@
     }
   }
 }
+.link-span {
+  color: #1677ff;
+  cursor: pointer;
+}
 .redStarSpan {
   display: inline-block;
   margin-right: 4px;
@@ -40,6 +44,13 @@
   line-height: 20px;
   font-size: 14px;
 }
+.ant-tabs-nav {
+  margin: 0 0 10px !important;
+}
+
+.mt0 {
+  margin-top: 0px;
+}
 .mt5 {
   margin-top: 5px;
 }
@@ -53,6 +64,10 @@
   margin-top: 20px;
 }
 //
+
+.mr0 {
+  margin-right: 0px;
+}
 .mr5 {
   margin-right: 5px;
 }
@@ -66,6 +81,9 @@
   margin-right: 20px;
 }
 //
+.ml0 {
+  margin-left: 0px;
+}
 .ml5 {
   margin-left: 5px;
 }
@@ -79,6 +97,9 @@
   margin-left: 20px;
 }
 //
+.mb0 {
+  margin-bottom: 0px;
+}
 .mb5 {
   margin-bottom: 5px;
 }

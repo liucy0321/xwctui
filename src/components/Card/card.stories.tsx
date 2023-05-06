@@ -1,21 +1,22 @@
-import React, { ReactElement, useMemo } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 //import WelcomeMDX from '../Welcome/Welcome.stories.mdx'
-import Button from "./button";
+import Card from "./card";
+import { Button } from "antd";
 import Footer from "../Footer/index";
 
 // https://github.com/storybookjs/storybook/issues/15574
 export default {
   title: "Card",
-  component: Button,
+  component: Card,
   // parameters: {
   //   docs: {
   //     page: WelcomeMDX
   //   }
   // }
-} as ComponentMeta<typeof Button>;
+} as ComponentMeta<typeof Card>;
 
-const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
+const Template: ComponentStory<typeof Card> = (args) => <Card {...args} />;
 export const ADefault = Template.bind({});
 ADefault.args = {
   title: "标替",
@@ -48,6 +49,7 @@ export const BButtonWithSize = () => {
     DOMType?: "button" | "pagination" | "dropdown";
     render?: () => ReactElement;
   }
+  const [visible, setVisible] = useState(true);
   const footerDom = useMemo<IFooterDom[]>(
     () => [
       {
@@ -59,11 +61,14 @@ export const BButtonWithSize = () => {
     ],
     []
   );
+  useEffect(() => {
+    setVisible(true);
+  }, []);
   return (
     <>
-      <Button title="标题">fffffffffffff</Button>
+      <Card title="标题">fffffffffffff</Card>
       <Footer footerDom={footerDom} />
     </>
   );
 };
-BButtonWithSize.storyName = "Button案例";
+BButtonWithSize.storyName = "card案例";

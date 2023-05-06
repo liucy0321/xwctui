@@ -13,6 +13,8 @@ export { default as QuickQuery } from "./components/QuickQuery";
 export { default as HoverWindow } from "./components/HoverWindow";
 export { default as XwctPopover } from "./components/XwctPopover";
 export { default as Province } from "./components/Province";
+export { default as Card } from "./components/Card";
+export { default as Button } from "./components/Button";
 export type { SelectProps } from "antd/lib/select";
 export type { ColumnsType } from "./components/Table/table";
 export type { ItemType } from "antd/lib/menu/hooks/useItems";
@@ -39,7 +41,6 @@ export type {
 } from "antd";
 export {
   DatePicker,
-  Button,
   Checkbox,
   Menu,
   Pagination,
@@ -93,7 +94,6 @@ export {
   Tour,
   FloatButton,
   Typography,
-  Card,
 } from "antd";
 export { default as zhCN } from "antd/lib/locale/zh_CN";
 export { default as Icon, createFromIconfontCN } from "@ant-design/icons";
