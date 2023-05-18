@@ -152,6 +152,8 @@ export const Table: FC<IProps<any>> = (props) => {
   const [dynamicData, setDynamicData] = useState([]);
   let currentColumns = useRef<any>([]);
   let copyColumns = clone(columns) || [];
+  const nowTimeRef = useRef<any>(true);
+  const timerRef = useRef<any>();
   /**
    * 所有展示增加省略号
    */
@@ -228,57 +230,20 @@ export const Table: FC<IProps<any>> = (props) => {
       }
     }
   }
-  const showDrawer = () => {
-    setOpen(true);
-    selectColData();
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-  /**
-   * 初始化
-   */
-  useEffect(() => {
-    if (tableCode) {
-      selectColData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableCode]);
-  const unshiftAddAndDel = () => {
-    // 给第一位添加
-    copyColumns.unshift({
-      width: 50,
-      fixed: "left",
-      render: (text, record, index) => (
-        <div className="add_del_css">
-          <PlusOutlined
-            // disabled={hideAddIcon}
-            style={{ display: hideAddIcon ? "none" : "block" }}
-            onClick={() => {
-              onAddAndDelHandle && onAddAndDelHandle("add", index, record);
-            }}
-          />
-          <Popconfirm
-            title="是否确定删除?"
-            cancelText="否"
-            okText="是"
-            onConfirm={() => {
-              onAddAndDelHandle && onAddAndDelHandle("del", index, record);
-            }}
-          >
-            <MinusOutlined
-              style={{ display: hideDelIcon ? "none" : "block" }}
-            />
-          </Popconfirm>
-        </div>
-      ),
-    });
-  };
   /**
    * 根据接口获取显示动态列
    */
-  const selectColData = () => {
+  const selectColData = useCallback(() => {
+    let time: any = new Date();
+    /**
+     * 3秒内不允许调两次接口
+     */
+    // if (nowTimeRef?.current) {
+    //   let diffTime = Math.abs(time - nowTimeRef?.current) / 1000;
+    //   // nowTimeRef.current = time;
+    //   if (diffTime < 3) return;
+    // }
+    // nowTimeRef.current = time;
     axios
       .post("/mapi/oper/tableConfig/query", {
         tableCode,
@@ -286,15 +251,17 @@ export const Table: FC<IProps<any>> = (props) => {
       })
       .then((response) => {
         if (response?.data?.isSuccess) {
+          let copyColumns = clone(columns) || [];
           let copyData: any = [...response?.data?.data];
           setDynamicData(copyData);
           copyData = copyData?.filter((pane) => pane?.ifShow === "Y");
+          // 加列设置按钮
           currentColumns.current = [
             {
               title: (
                 <Tooltip title="列设置">
                   <Button type="link">
-                    <MenuFoldOutlined onClick={showDrawer} />
+                    <MenuFoldOutlined onClick={() => setOpen(true)} />
                   </Button>
                 </Tooltip>
               ),
@@ -303,7 +270,13 @@ export const Table: FC<IProps<any>> = (props) => {
               render: (text, record, index) => `${index + 1}`,
             },
           ];
+          /**
+           * 解析columnsRender
+           */
           let copyColumnsRender: any = { ...columnsRender };
+          if (copyColumnsRender?.[0]) {
+            copyColumnsRender = copyColumnsRender?.[0];
+          }
           for (let item in copyColumnsRender) {
             let itemList = item.split(",");
             if (itemList.length > 1) {
@@ -313,6 +286,7 @@ export const Table: FC<IProps<any>> = (props) => {
               delete copyColumnsRender[item];
             }
           }
+          // 根据动态数据重新构建columns
           for (let i = 0; i < copyData?.length; i++) {
             // 左固定或者右固定
             let ifFixed: any = null;
@@ -335,6 +309,7 @@ export const Table: FC<IProps<any>> = (props) => {
 
             currentColumns.current.push(column);
           }
+          // 拼接增加的columns和构建的
           currentColumns.current = currentColumns.current.concat(copyColumns);
           // 表格列数字小数点
           // 表格列数字千分位
@@ -372,6 +347,7 @@ export const Table: FC<IProps<any>> = (props) => {
               };
             }
           }
+          // 增加&删除按钮
           if (onAddAndDelHandle) {
             currentColumns.current.unshift({
               width: 50,
@@ -379,7 +355,6 @@ export const Table: FC<IProps<any>> = (props) => {
               render: (text, record, index) => (
                 <div className="add_del_css">
                   <PlusOutlined
-                    // disabled={hideAddIcon}
                     style={{ display: hideAddIcon ? "none" : "block" }}
                     onClick={() => {
                       onAddAndDelHandle &&
@@ -406,8 +381,85 @@ export const Table: FC<IProps<any>> = (props) => {
         } else {
           message.warning(response?.data?.msg || "网络异常，请联系管理员！");
         }
-      })
-      .catch((error) => {});
+      });
+  }, [
+    btnAuth,
+    columns,
+    columnsRender,
+    hideAddIcon,
+    hideDelIcon,
+    onAddAndDelHandle,
+    orderWidth,
+    tableCode,
+  ]);
+  /**
+   * 防抖
+   */
+  // const debounce = useCallback(
+  //   (ms: number) => {
+  //     console.log(nowTimeRef?.current);
+  //     if (nowTimeRef?.current) {
+  //       clearTimeout(nowTimeRef?.current);
+  //     }
+  //     nowTimeRef.current = setTimeout(() => {
+  //       selectColData();
+  //     }, ms);
+  //   },
+  //   [selectColData]
+  // );
+  const debounce = useCallback(
+    (wait: number) => {
+      clearTimeout(timerRef.current);
+      if (nowTimeRef?.current) {
+        selectColData();
+        nowTimeRef.current = false;
+      }
+      timerRef.current = setTimeout(() => {
+        nowTimeRef.current = true;
+      }, wait);
+    },
+    [selectColData]
+  );
+  /**
+   * 初始化
+   */
+  useEffect(() => {
+    if (tableCode) {
+      /**
+       * 三秒内不允许调两次接口
+       */
+      debounce(3000);
+    }
+  }, [debounce, tableCode]);
+  const unshiftAddAndDel = () => {
+    // 给第一位添加
+    copyColumns.unshift({
+      width: 50,
+      fixed: "left",
+      render: (text, record, index) => (
+        <div className="add_del_css">
+          <PlusOutlined
+            // disabled={hideAddIcon}
+            style={{ display: hideAddIcon ? "none" : "block" }}
+            onClick={() => {
+              onAddAndDelHandle && onAddAndDelHandle("add", index, record);
+            }}
+          />
+          <Popconfirm
+            title="是否确定删除?"
+            cancelText="否"
+            okText="是"
+            onConfirm={() => {
+              onAddAndDelHandle && onAddAndDelHandle("del", index, record);
+            }}
+          >
+            <MinusOutlined
+              style={{ display: hideDelIcon ? "none" : "block" }}
+            />
+          </Popconfirm>
+        </div>
+      ),
+    });
   };
   /**
    * 新增删除按钮
@@ -718,7 +770,7 @@ export const Table: FC<IProps<any>> = (props) => {
       </DndProvider>
       <TableColumns
         open={open}
-        onClose={onClose}
+        onClose={() => setOpen(false)}
         dynamicData={dynamicData}
         setDynamicData={setDynamicData}
         tableCode={tableCode}

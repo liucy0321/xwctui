@@ -1,6 +1,6 @@
 {
   "name": "xwctui",
-  "version": "1.6.15",
+  "version": "1.6.25",
   "description": "React components library",
   "author": "Liu ChenYue",
   "private": false,
@@ -42,7 +42,7 @@
     "react-transition-group": "^4.4.5"
   },
   "peerDependencies": {
-    "antd": ">=5.1.7",
+    "antd": ">=5.4.7",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
@@ -115,7 +115,7 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "18.0.6",
     "@types/react-transition-group": "^4.4.5",
-    "antd": "5.1.7",
+    "antd": "^5.4.7",
     "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "husky": "^8.0.1",

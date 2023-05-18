@@ -9,7 +9,7 @@ interface ICardProps {
 }
 export const Card: FC<ICardProps & CardProps> = (props) => {
   const { title, className, children, extraTitle, ...restProps } = props;
-  const classes = classNames(className, "mb10");
+  const classes = classNames("mb10", className);
   return (
     <AntCard
       title={

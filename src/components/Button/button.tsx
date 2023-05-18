@@ -2,19 +2,29 @@ import React, { FC } from "react";
 import classNames from "classnames";
 import { Button as AntButton, ButtonProps } from "antd";
 
-interface IButtonProps {}
+interface IButtonProps {
+  ifAntBtn?: boolean;
+}
 
 export const Button: FC<IButtonProps & ButtonProps> = (props) => {
-  const { type, className, children, ...restProps } = props;
-  const classes = classNames(className, type === "link" && "link-span");
+  const { type, ifAntBtn, className, children, disabled, ...restProps } = props;
+  let classes = classNames(className, type === "link" && "link-span");
+  if (disabled) {
+    classes = classNames(className, "dis-link-span");
+  }
   return (
     <>
-      {type === "link" ? (
+      {type === "link" && !ifAntBtn ? (
         <span className={classes} {...restProps}>
           {children}
         </span>
       ) : (
-        <AntButton className={classes} type={type} {...restProps}>
+        <AntButton
+          className={classes}
+          type={type}
+          disabled={disabled}
+          {...restProps}
+        >
           {children}
         </AntButton>
       )}

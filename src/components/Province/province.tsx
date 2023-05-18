@@ -21,11 +21,12 @@ interface Option {
  */
 interface IProvince {
   visible?: boolean;
+  callback?: (val) => void;
 }
 export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
-  const { value, visible, ...restProps } = props;
+  const { value, visible, callback, ...restProps } = props;
   const [options, setOptions] = useState<Option[]>([]);
-  const [provinceVal, setProvinceVal] = useState<any>([]);
+  const [provinceVal, setProvinceVal] = useState<any>(value);
   const optionsRef = useRef<any>([]);
   // 省市区快捷录入
   const getCodeByArea = () => {
@@ -37,15 +38,16 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
           let list: any = [];
           if (province) {
             list.push(province);
-            getLoadOptions(province);
+            // getLoadOptions(province);
           }
           if (province && city) {
             list.push(city);
-            getLoadOptions(province, city);
+            // getLoadOptions(province, city);
           }
           if (province && city && area) {
             area && list.push(area);
           }
+          callback(list);
           setProvinceVal(list);
         } else {
           message.error(res?.msg || "网络异常，请联系管理员！");
@@ -56,6 +58,7 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
     if (visible === false) {
       return;
     }
+    setProvinceVal(value);
     axios.post("/mapi/oper/area/list", {}).then((res: any) => {
       if (res?.data?.isSuccess) {
         let copyData = [...res?.data?.data];
@@ -67,8 +70,10 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
         optionsRef.current = copyData;
         if (value?.length > 0) {
           value.length > 0 && getLoadOptions(value[0]);
-          (value.length === 2 || value.length === 3) &&
-            getLoadOptions(value[0], value[1]);
+          setTimeout(() => {
+            (value.length === 2 || value.length === 3) &&
+              getLoadOptions(value[0], value[1]);
+          }, 500);
         } else {
           getCodeByArea();
         }
@@ -146,7 +151,7 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
   // 暴露
   return (
     <>
-      {provinceVal.length > 0 && (
+      {provinceVal?.length > 0 && (
         <AntCascader
           options={options}
           loadData={loadData}
