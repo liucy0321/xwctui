@@ -36,7 +36,7 @@ interface IProps {
   style?: React.CSSProperties;
   className?: string;
 }
-const pageSizeOptions = ["10", "20", "30", "100"];
+const pageSizeOptions = [50, 100, 200, 500];
 
 export const XwFooter: FC<IProps> = (props) => {
   const { footerDom, className } = props;

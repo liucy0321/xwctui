@@ -8,7 +8,7 @@ export { default as Table } from "./components/Table";
 export { default as Form } from "./components/Form";
 export { default as Footer } from "./components/Footer";
 export { default as Container } from "./components/Container";
-// export { default as Input } from "./components/Input";
+export { default as Input } from "./components/Input";
 export { default as QuickQuery } from "./components/QuickQuery";
 export { default as HoverWindow } from "./components/HoverWindow";
 export { default as XwctPopover } from "./components/XwctPopover";
@@ -51,8 +51,8 @@ export {
   Radio,
   Switch,
   InputNumber,
-  Input,
-} from "antd";
+} from // Input,
+"antd";
 export {
   Calendar,
   Alert,

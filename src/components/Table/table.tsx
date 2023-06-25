@@ -164,8 +164,8 @@ export const Table: FC<IProps<any>> = (props) => {
       copyColumns[i]?.title !== "状态"
     ) {
       copyColumns[i] = {
-        ...copyColumns[i],
         ellipsis: true,
+        ...copyColumns[i],
       };
     }
   }
@@ -184,6 +184,18 @@ export const Table: FC<IProps<any>> = (props) => {
         );
       };
     }
+  }
+  // 增加第一列
+  if (onMoveRow) {
+    copyColumns = [
+      {
+        title: "拖拽排序",
+        width: 70,
+        key: "sort",
+        align: "center",
+      },
+      ...copyColumns,
+    ];
   }
   // 表格列删除
   copyColumns = copyColumns?.filter((pane) => pane?.hideColumn !== true);
@@ -234,7 +246,7 @@ export const Table: FC<IProps<any>> = (props) => {
    * 根据接口获取显示动态列
    */
   const selectColData = useCallback(() => {
-    let time: any = new Date();
+    // let time: any = new Date();
     /**
      * 3秒内不允许调两次接口
      */
@@ -313,6 +325,10 @@ export const Table: FC<IProps<any>> = (props) => {
           currentColumns.current = currentColumns.current.concat(copyColumns);
           // 表格列数字小数点
           // 表格列数字千分位
+          // 表格列删除
+          currentColumns.current = currentColumns.current?.filter(
+            (pane) => pane?.hideColumn !== true
+          );
           for (let i in currentColumns.current) {
             const colNum = currentColumns.current[i]?.toFixedNum;
             if (
@@ -392,21 +408,6 @@ export const Table: FC<IProps<any>> = (props) => {
     orderWidth,
     tableCode,
   ]);
-  /**
-   * 防抖
-   */
-  // const debounce = useCallback(
-  //   (ms: number) => {
-  //     console.log(nowTimeRef?.current);
-  //     if (nowTimeRef?.current) {
-  //       clearTimeout(nowTimeRef?.current);
-  //     }
-  //     nowTimeRef.current = setTimeout(() => {
-  //       selectColData();
-  //     }, ms);
-  //   },
-  //   [selectColData]
-  // );
   const debounce = useCallback(
     (wait: number) => {
       clearTimeout(timerRef.current);
@@ -674,7 +675,8 @@ export const Table: FC<IProps<any>> = (props) => {
             // columns={copyColumns}
             components={onMoveRow ? components : undefined}
             className={classes}
-            scroll={{ x: 1000, y: 500 }}
+            scroll={{ x: 1000, y: "calc(100vh )" }}
+            style={{ height: "calc(100% - 115px)" }}
             pagination={false}
             rowSelection={rowSelection}
             dataSource={dataSource}
@@ -709,6 +711,9 @@ export const Table: FC<IProps<any>> = (props) => {
                       parentchildsign: parentChildSign,
                       moveRow: moveRow,
                       findRow: findRow,
+                      children: tableCode
+                        ? currentColumns?.current
+                        : copyColumns,
                     };
                     return attr as DraggableBodyRowProps;
                   }
@@ -724,7 +729,8 @@ export const Table: FC<IProps<any>> = (props) => {
             // columns={copyColumns}
             components={onMoveRow ? components : undefined}
             className={classes}
-            scroll={{ x: 1000, y: 500 }}
+            scroll={{ x: 1000, y: "calc(100vh )" }}
+            style={{ height: "calc(100% - 115px)" }}
             pagination={false}
             rowSelection={rowSelection}
             dataSource={dataSource}
@@ -759,6 +765,9 @@ export const Table: FC<IProps<any>> = (props) => {
                       parentchildsign: parentChildSign,
                       moveRow: moveRow,
                       findRow: findRow,
+                      children: tableCode
+                        ? currentColumns?.current
+                        : copyColumns,
                     };
                     return attr as DraggableBodyRowProps;
                   }

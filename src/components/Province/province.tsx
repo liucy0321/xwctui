@@ -22,9 +22,10 @@ interface Option {
 interface IProvince {
   visible?: boolean;
   callback?: (val) => void;
+  notDefault?: boolean;
 }
 export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
-  const { value, visible, callback, ...restProps } = props;
+  const { value, visible, callback, notDefault, ...restProps } = props;
   const [options, setOptions] = useState<Option[]>([]);
   const [provinceVal, setProvinceVal] = useState<any>(value);
   const optionsRef = useRef<any>([]);
@@ -74,7 +75,7 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
             (value.length === 2 || value.length === 3) &&
               getLoadOptions(value[0], value[1]);
           }, 500);
-        } else {
+        } else if (!notDefault) {
           getCodeByArea();
         }
       } else {
@@ -82,7 +83,7 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, visible]);
+  }, [value, visible, notDefault]);
   /**
    * 获取省市区下的
    *
@@ -151,7 +152,7 @@ export const Province: FC<IProvince & CascaderProps<any>> = (props: any) => {
   // 暴露
   return (
     <>
-      {provinceVal?.length > 0 && (
+      {(provinceVal?.length > 0 || notDefault) && (
         <AntCascader
           options={options}
           loadData={loadData}

@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes, optionsTyps } from "../utils/common";
 import type { DraggableBodyRowProps } from "../table";
+import { MenuOutlined } from "@ant-design/icons";
 export const DraggableBodyRow = (props: DraggableBodyRowProps) => {
   let {
     record,
@@ -12,6 +13,7 @@ export const DraggableBodyRow = (props: DraggableBodyRowProps) => {
     moveRow,
     findRow,
     parentchildsign,
+    children,
     ...restProps
   } = props;
   let id = parentchildsign?.[0];
@@ -138,20 +140,42 @@ export const DraggableBodyRow = (props: DraggableBodyRowProps) => {
   });
 
   drop(drag(ref));
-
   // 拖拽行的位置显示透明
   const opacity = isDragging ? 0 : 1;
 
   if (!record) return null;
   return (
-    <tr
-      ref={ref}
-      className={`${className}
-      ${isOver ? dropClassName : ""} 
-      ${isDrag ? "can-drag" : ""}`}
-      style={isDrag ? { cursor: "move", opacity, ...style } : { ...style }}
-      data-handler-id={handlerId}
-      {...restProps}
-    />
+    // <tr
+    //   ref={ref}
+    //   className={`${className}
+    //   ${isOver ? dropClassName : ""}
+    //   ${isDrag ? "can-drag" : ""}`}
+    //   style={isDrag ? { cursor: "move", opacity, ...style } : { ...style }}
+    //   data-handler-id={handlerId}
+    //   {...restProps}
+    // />
+    <tr>
+      {React.Children.map(children, (child) => {
+        if ((child as React.ReactElement)?.key === "sort") {
+          return React.cloneElement(child as React.ReactElement, {
+            children: (
+              <MenuOutlined
+                ref={ref}
+                // style={{ touchAction: "none", cursor: "move" }}
+                className={`${className}
+    ${isOver ? dropClassName : ""}
+    ${isDrag ? "can-drag" : ""}`}
+                style={
+                  isDrag ? { cursor: "move", opacity, ...style } : { ...style }
+                }
+                data-handler-id={handlerId}
+                {...restProps}
+              />
+            ),
+          });
+        }
+        return child;
+      })}
+    </tr>
   );
 };
