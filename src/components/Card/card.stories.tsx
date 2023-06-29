@@ -1,8 +1,7 @@
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import React, { ReactElement, useMemo } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 //import WelcomeMDX from '../Welcome/Welcome.stories.mdx'
 import Card from "./card";
-import { Button } from "antd";
 import Footer from "../Footer/index";
 
 // https://github.com/storybookjs/storybook/issues/15574
@@ -49,7 +48,6 @@ export const BButtonWithSize = () => {
     DOMType?: "button" | "pagination" | "dropdown";
     render?: () => ReactElement;
   }
-  const [visible, setVisible] = useState(true);
   const footerDom = useMemo<IFooterDom[]>(
     () => [
       {
@@ -61,9 +59,6 @@ export const BButtonWithSize = () => {
     ],
     []
   );
-  useEffect(() => {
-    setVisible(true);
-  }, []);
   return (
     <>
       <Card title="标题">fffffffffffff</Card>

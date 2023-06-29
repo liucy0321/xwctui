@@ -13,19 +13,11 @@ export interface IColumnsProps {
   setDynamicData: any;
   tableCode?: string;
   onReload?: () => void;
-  selectColData: () => void;
 }
 
 export const TableColumns: FC<IColumnsProps> = (colProps) => {
-  const {
-    open,
-    onClose,
-    dynamicData,
-    setDynamicData,
-    tableCode,
-    selectColData,
-    onReload,
-  } = colProps;
+  const { open, onClose, dynamicData, setDynamicData, tableCode, onReload } =
+    colProps;
   const [loading, setLoading] = useState(false);
   const fixedOptions = [
     { label: "左固定", value: "L" },
@@ -132,7 +124,6 @@ export const TableColumns: FC<IColumnsProps> = (colProps) => {
         setLoading(false);
         if (response?.data?.isSuccess) {
           onClose();
-          selectColData();
           if (onReload) onReload();
           message.success("重置成功");
         } else {
@@ -156,7 +147,6 @@ export const TableColumns: FC<IColumnsProps> = (colProps) => {
         setLoading(false);
         if (response?.data?.isSuccess) {
           onClose();
-          selectColData();
           if (onReload) onReload();
           message.success("保存成功");
         } else {

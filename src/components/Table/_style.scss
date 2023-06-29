@@ -35,7 +35,7 @@
       line-height: 28px !important;
     }
     tr.ant-table-row-selected td {
-      background-color: #e6f7ff !important;
+      background-color: #c0ebff !important;
     }
     .ant-table-tbody tr:nth-child(2n + 1) {
       // background-color: #f0f8ff7d;
@@ -44,13 +44,13 @@
       }
     }
     .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
-      background-color: #effaff;
+      background-color: #e6f7ff;
     }
     .ant-table-body .ant-table-row-hover {
-      background: #effaff;
+      background: #e6f7ff;
     }
     .ant-table-body .ant-table-row-hover > td {
-      background: #effaff;
+      background: #e6f7ff;
     }
   }
   .red-column-span {

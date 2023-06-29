@@ -7,7 +7,7 @@ interface IProps extends InputProps {
   value?: string;
 }
 
-const Input = ({
+export const Input = ({
   value = "",
   onChange,
   onInput,

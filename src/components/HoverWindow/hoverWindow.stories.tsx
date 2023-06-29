@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 //import WelcomeMDX from '../Welcome/Welcome.stories.mdx'
 import HoverWindow from "./hoverWindow";
-import { Button } from "antd";
 import Footer from "../Footer/index";
 
 // https://github.com/storybookjs/storybook/issues/15574

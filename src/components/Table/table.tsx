@@ -17,15 +17,15 @@ import type { ISummaryConfig } from "./tableSummary";
 import { clone, thousandth } from "./utils/common";
 import { DraggableBodyRow } from "./components/row";
 // 拖拽
+import { useMoveRow } from "./hooks";
 import ResizableTable from "./ResizableTable";
-import update from "immutability-helper";
 import {
   PlusOutlined,
   MinusOutlined,
   MenuFoldOutlined,
 } from "@ant-design/icons";
 import classNames from "classnames";
-import { optionsTyps, findFromData, isNull, getParam } from "./utils/common";
+import { findFromData, isNull } from "./utils/common";
 import axios from "axios";
 // 选择
 export interface ISelectContext {
@@ -150,10 +150,17 @@ export const Table: FC<IProps<any>> = (props) => {
   } = props;
   const [open, setOpen] = useState(false);
   const [dynamicData, setDynamicData] = useState([]);
+  const oldTableCodeRef = useRef<any>("");
   let currentColumns = useRef<any>([]);
   let copyColumns = clone(columns) || [];
   const nowTimeRef = useRef<any>(true);
   const timerRef = useRef<any>();
+  const moveRow = useMoveRow({
+    rowKey,
+    parentChildSign,
+    dataSource,
+    onMoveRow,
+  });
   /**
    * 所有展示增加省略号
    */
@@ -242,172 +249,167 @@ export const Table: FC<IProps<any>> = (props) => {
       }
     }
   }
+  const changeData = useCallback(
+    (data) => {
+      let copyColumns = clone(columns) || [];
+      let copyData: any = [...data];
+      setDynamicData(copyData);
+      copyData = copyData?.filter((pane) => pane?.ifShow === "Y");
+      // 加列设置按钮
+      currentColumns.current = [
+        {
+          title: (
+            <Tooltip title="列设置">
+              <Button type="link">
+                <MenuFoldOutlined onClick={() => setOpen(true)} />
+              </Button>
+            </Tooltip>
+          ),
+          width: orderWidth || 50,
+          fixed: "left",
+          render: (text, record, index) => `${index + 1}`,
+        },
+      ];
+      /**
+       * 解析columnsRender
+       */
+      let copyColumnsRender: any = { ...columnsRender };
+      if (copyColumnsRender?.[0]) {
+        copyColumnsRender = copyColumnsRender?.[0];
+      }
+      for (let item in copyColumnsRender) {
+        let itemList = item.split(",");
+        if (itemList.length > 1) {
+          for (let i = 0; i < itemList.length; i++) {
+            copyColumnsRender[itemList[i]] = copyColumnsRender[item];
+          }
+          delete copyColumnsRender[item];
+        }
+      }
+      // 根据动态数据重新构建columns
+      for (let i = 0; i < copyData?.length; i++) {
+        // 左固定或者右固定
+        let ifFixed: any = null;
+        if (copyData?.[i]?.ifFixed === "L") {
+          ifFixed = "left";
+        } else if (copyData?.[i]?.ifFixed === "R") {
+          ifFixed = "right";
+        }
+        const column = {
+          title: copyData?.[i]?.columnDesc,
+          dataIndex: copyData?.[i]?.columnName,
+          key: copyData?.[i]?.columnName,
+          ellipsis: true,
+          width: copyData?.[i]?.columnWidth,
+          fixed: ifFixed,
+          thousandth: copyData?.[i]?.thousandth,
+          toFixedNum: parseInt(copyData?.[i]?.toFixedNum),
+          render: copyColumnsRender?.[copyData?.[i]?.columnName],
+        };
+
+        currentColumns.current.push(column);
+      }
+      // 拼接增加的columns和构建的
+      currentColumns.current = currentColumns.current.concat(copyColumns);
+      // 表格列数字小数点
+      // 表格列数字千分位
+      // 表格列删除
+      currentColumns.current = currentColumns.current?.filter(
+        (pane) => pane?.hideColumn !== true
+      );
+      for (let i in currentColumns.current) {
+        const colNum = currentColumns.current[i]?.toFixedNum;
+        if (
+          currentColumns.current[i]?.toFixedNum &&
+          currentColumns.current[i]?.thousandth &&
+          !currentColumns.current[i]?.render
+        ) {
+          currentColumns.current[i] = {
+            ...currentColumns.current[i],
+            render: (text) =>
+              !isNull(text)
+                ? thousandth(parseFloat(text)?.toFixed(colNum))
+                : "",
+          };
+        } else if (
+          currentColumns.current[i]?.toFixedNum &&
+          !currentColumns.current[i]?.render
+        ) {
+          currentColumns.current[i] = {
+            ...currentColumns.current[i],
+            render: (text) =>
+              !isNull(text) ? parseFloat(text)?.toFixed(colNum) : "",
+          };
+        } else if (
+          currentColumns.current[i]?.thousandth &&
+          !currentColumns.current[i]?.render
+        ) {
+          currentColumns.current[i] = {
+            ...currentColumns.current[i],
+            render: (text) =>
+              !isNull(text) ? thousandth(parseFloat(text)) : "",
+          };
+        }
+      }
+      // 增加&删除按钮
+      if (onAddAndDelHandle) {
+        currentColumns.current.unshift({
+          width: 50,
+          fixed: "left",
+          render: (text, record, index) => (
+            <div className="add_del_css">
+              <PlusOutlined
+                style={{ display: hideAddIcon ? "none" : "block" }}
+                onClick={() => {
+                  onAddAndDelHandle && onAddAndDelHandle("add", index, record);
+                }}
+              />
+              <Popconfirm
+                title="是否确定删除?"
+                cancelText="否"
+                okText="是"
+                onConfirm={() => {
+                  onAddAndDelHandle && onAddAndDelHandle("del", index, record);
+                }}
+              >
+                <MinusOutlined
+                  style={{ display: hideDelIcon ? "none" : "block" }}
+                />
+              </Popconfirm>
+            </div>
+          ),
+        });
+      }
+    },
+    [
+      columns,
+      columnsRender,
+      hideAddIcon,
+      hideDelIcon,
+      onAddAndDelHandle,
+      orderWidth,
+    ]
+  );
   /**
    * 根据接口获取显示动态列
    */
   const selectColData = useCallback(() => {
-    // let time: any = new Date();
-    /**
-     * 3秒内不允许调两次接口
-     */
-    // if (nowTimeRef?.current) {
-    //   let diffTime = Math.abs(time - nowTimeRef?.current) / 1000;
-    //   // nowTimeRef.current = time;
-    //   if (diffTime < 3) return;
-    // }
-    // nowTimeRef.current = time;
-    axios
-      .post("/mapi/oper/tableConfig/query", {
-        tableCode,
-        fieldAuthList: btnAuth,
-      })
-      .then((response) => {
-        if (response?.data?.isSuccess) {
-          let copyColumns = clone(columns) || [];
-          let copyData: any = [...response?.data?.data];
-          setDynamicData(copyData);
-          copyData = copyData?.filter((pane) => pane?.ifShow === "Y");
-          // 加列设置按钮
-          currentColumns.current = [
-            {
-              title: (
-                <Tooltip title="列设置">
-                  <Button type="link">
-                    <MenuFoldOutlined onClick={() => setOpen(true)} />
-                  </Button>
-                </Tooltip>
-              ),
-              width: orderWidth || 50,
-              fixed: "left",
-              render: (text, record, index) => `${index + 1}`,
-            },
-          ];
-          /**
-           * 解析columnsRender
-           */
-          let copyColumnsRender: any = { ...columnsRender };
-          if (copyColumnsRender?.[0]) {
-            copyColumnsRender = copyColumnsRender?.[0];
+    if (oldTableCodeRef.current !== tableCode) {
+      axios
+        .post("/mapi/oper/tableConfig/query", {
+          tableCode,
+          fieldAuthList: btnAuth,
+        })
+        .then((response) => {
+          if (response?.data?.isSuccess) {
+            oldTableCodeRef.current = tableCode;
+            changeData(response?.data?.data);
+          } else {
+            message.warning(response?.data?.msg || "网络异常，请联系管理员！");
           }
-          for (let item in copyColumnsRender) {
-            let itemList = item.split(",");
-            if (itemList.length > 1) {
-              for (let i = 0; i < itemList.length; i++) {
-                copyColumnsRender[itemList[i]] = copyColumnsRender[item];
-              }
-              delete copyColumnsRender[item];
-            }
-          }
-          // 根据动态数据重新构建columns
-          for (let i = 0; i < copyData?.length; i++) {
-            // 左固定或者右固定
-            let ifFixed: any = null;
-            if (copyData?.[i]?.ifFixed === "L") {
-              ifFixed = "left";
-            } else if (copyData?.[i]?.ifFixed === "R") {
-              ifFixed = "right";
-            }
-            const column = {
-              title: copyData?.[i]?.columnDesc,
-              dataIndex: copyData?.[i]?.columnName,
-              key: copyData?.[i]?.columnName,
-              ellipsis: true,
-              width: copyData?.[i]?.columnWidth,
-              fixed: ifFixed,
-              thousandth: copyData?.[i]?.thousandth,
-              toFixedNum: parseInt(copyData?.[i]?.toFixedNum),
-              render: copyColumnsRender?.[copyData?.[i]?.columnName],
-            };
-
-            currentColumns.current.push(column);
-          }
-          // 拼接增加的columns和构建的
-          currentColumns.current = currentColumns.current.concat(copyColumns);
-          // 表格列数字小数点
-          // 表格列数字千分位
-          // 表格列删除
-          currentColumns.current = currentColumns.current?.filter(
-            (pane) => pane?.hideColumn !== true
-          );
-          for (let i in currentColumns.current) {
-            const colNum = currentColumns.current[i]?.toFixedNum;
-            if (
-              currentColumns.current[i]?.toFixedNum &&
-              currentColumns.current[i]?.thousandth &&
-              !currentColumns.current[i]?.render
-            ) {
-              currentColumns.current[i] = {
-                ...currentColumns.current[i],
-                render: (text) =>
-                  !isNull(text)
-                    ? thousandth(parseFloat(text)?.toFixed(colNum))
-                    : "",
-              };
-            } else if (
-              currentColumns.current[i]?.toFixedNum &&
-              !currentColumns.current[i]?.render
-            ) {
-              currentColumns.current[i] = {
-                ...currentColumns.current[i],
-                render: (text) =>
-                  !isNull(text) ? parseFloat(text)?.toFixed(colNum) : "",
-              };
-            } else if (
-              currentColumns.current[i]?.thousandth &&
-              !currentColumns.current[i]?.render
-            ) {
-              currentColumns.current[i] = {
-                ...currentColumns.current[i],
-                render: (text) =>
-                  !isNull(text) ? thousandth(parseFloat(text)) : "",
-              };
-            }
-          }
-          // 增加&删除按钮
-          if (onAddAndDelHandle) {
-            currentColumns.current.unshift({
-              width: 50,
-              fixed: "left",
-              render: (text, record, index) => (
-                <div className="add_del_css">
-                  <PlusOutlined
-                    style={{ display: hideAddIcon ? "none" : "block" }}
-                    onClick={() => {
-                      onAddAndDelHandle &&
-                        onAddAndDelHandle("add", index, record);
-                    }}
-                  />
-                  <Popconfirm
-                    title="是否确定删除?"
-                    cancelText="否"
-                    okText="是"
-                    onConfirm={() => {
-                      onAddAndDelHandle &&
-                        onAddAndDelHandle("del", index, record);
-                    }}
-                  >
-                    <MinusOutlined
-                      style={{ display: hideDelIcon ? "none" : "block" }}
-                    />
-                  </Popconfirm>
-                </div>
-              ),
-            });
-          }
-        } else {
-          message.warning(response?.data?.msg || "网络异常，请联系管理员！");
-        }
-      });
-  }, [
-    btnAuth,
-    columns,
-    columnsRender,
-    hideAddIcon,
-    hideDelIcon,
-    onAddAndDelHandle,
-    orderWidth,
-    tableCode,
-  ]);
+        });
+    }
+  }, [btnAuth, changeData, tableCode]);
   const debounce = useCallback(
     (wait: number) => {
       clearTimeout(timerRef.current);
@@ -427,9 +429,9 @@ export const Table: FC<IProps<any>> = (props) => {
   useEffect(() => {
     if (tableCode) {
       /**
-       * 三秒内不允许调两次接口
+       * 一秒内不允许调两次接口
        */
-      debounce(3000);
+      debounce(1000);
     }
   }, [debounce, tableCode]);
   const unshiftAddAndDel = () => {
@@ -478,192 +480,11 @@ export const Table: FC<IProps<any>> = (props) => {
       rowParentIndex: parentIndex,
     };
   };
-  /**
-   * 表格拖拽
-   * @param props
-   * @returns
-   */
-  const moveRow = useCallback(
-    (props) => {
-      let childSign = rowKey;
-      if (parentChildSign?.length === 2) {
-        childSign = parentChildSign?.[0];
-      }
-      let { dragId, dropId, dropParentId, operateType, originalIndex } = props;
-      let {
-        dragRow,
-        dropRow,
-        dragIndex,
-        dropIndex,
-        dragParentIndex, // 拖拽子节点的父节点索引
-        // dropParentIndex, // 放置子节点父节点索引
-      } = getParam(dataSource, dragId, dropId, childSign);
-      // 拖拽是否是组
-      // let dragIsGroup =
-      //   dragRow?.type === dataType.group || !dragRow?.[parentChildSign?.[1]];
-      let dragIsGroup = true;
-      // 放置的是否是组
-      let dropIsGroup = !dropParentId;
-      if (parentChildSign) {
-        dragIsGroup = !dragRow?.[parentChildSign?.[1]];
-      }
-
-      // 根据变化的数据查找拖拽行的row和索引
-      const {
-        row,
-        index: rowIndex,
-        // parentIndex: rowParentIndex,
-      } = findFromData(dataSource, dragId, childSign);
-      let newData = dataSource;
-      // 组拖拽
-      if (dragIsGroup && dropIsGroup) {
-        // 超出出拖拽区域还原
-        if (operateType === optionsTyps.didDrop) {
-          newData = update(dataSource, {
-            $splice: [
-              [rowIndex, 1], //删除目前拖拽的索引的数据
-              [originalIndex, 0, row], // 将拖拽数据插入原始索引位置
-            ],
-          });
-        } else {
-          newData = update(dataSource, {
-            $splice: [
-              [dragIndex, 1],
-              [dropIndex, 0, dragRow],
-            ],
-          });
-        }
-      }
-      // 同一组下的子项拖拽
-      else if (
-        parentChildSign &&
-        dragRow?.[parentChildSign?.[1]] === dropRow?.[parentChildSign?.[1]]
-      ) {
-        let resultIndex: any = [...dragParentIndex];
-        if (resultIndex.length > 0) {
-          resultIndex.splice(resultIndex.length - 1, 1);
-        }
-        // 超出拖拽区域还原
-        if (operateType === optionsTyps.didDrop) {
-          switch (resultIndex?.length) {
-            case 1: {
-              // 二级数组
-              newData = update(dataSource, {
-                [resultIndex?.[0]]: {
-                  children: {
-                    $splice: [
-                      [rowIndex, 1],
-                      [originalIndex, 0, row],
-                    ],
-                  },
-                },
-              });
-              break;
-            }
-            case 2: {
-              // 三级数组
-              newData = update(dataSource, {
-                [resultIndex?.[0]]: {
-                  children: {
-                    [resultIndex?.[1]]: {
-                      children: {
-                        $splice: [
-                          [rowIndex, 1],
-                          [originalIndex, 0, row],
-                        ],
-                      },
-                    },
-                  },
-                },
-              });
-              break;
-            }
-            case 3: {
-              // 四级数组
-              newData = update(dataSource, {
-                [resultIndex?.[0]]: {
-                  children: {
-                    [resultIndex?.[1]]: {
-                      children: {
-                        [resultIndex?.[2]]: {
-                          children: {
-                            $splice: [
-                              [rowIndex, 1],
-                              [originalIndex, 0, row],
-                            ],
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              });
-            }
-          }
-        } else {
-          switch (resultIndex?.length) {
-            case 1: {
-              // 二级数组
-              newData = update(dataSource, {
-                [resultIndex?.[0]]: {
-                  children: {
-                    $splice: [
-                      [dragIndex, 1],
-                      [dropIndex, 0, dragRow],
-                    ],
-                  },
-                },
-              });
-              break;
-            }
-            case 2: {
-              // 三级数组
-              newData = update(dataSource, {
-                [resultIndex?.[0]]: {
-                  children: {
-                    [resultIndex?.[1]]: {
-                      children: {
-                        $splice: [
-                          [dragIndex, 1],
-                          [dropIndex, 0, dragRow],
-                        ],
-                      },
-                    },
-                  },
-                },
-              });
-              break;
-            }
-            case 3: {
-              // 四级数组
-              newData = update(dataSource, {
-                [resultIndex?.[0]]: {
-                  children: {
-                    [resultIndex?.[1]]: {
-                      children: {
-                        [resultIndex?.[2]]: {
-                          children: {
-                            $splice: [
-                              [dragIndex, 1],
-                              [dropIndex, 0, dragRow],
-                            ],
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              });
-            }
-          }
-        }
-      }
-      if (onMoveRow) {
-        onMoveRow(newData, dragParentIndex, operateType);
-      }
-    },
-    [dataSource, onMoveRow, parentChildSign, rowKey]
-  );
+  const onReloadById = () => {
+    oldTableCodeRef.current = "";
+    selectColData();
+    onReload && onReload();
+  };
   return (
     <>
       <DndProvider backend={HTML5Backend}>
@@ -672,7 +493,6 @@ export const Table: FC<IProps<any>> = (props) => {
             bordered
             columns={tableCode ? currentColumns?.current : copyColumns}
             rowKey={rowKey}
-            // columns={copyColumns}
             components={onMoveRow ? components : undefined}
             className={classes}
             scroll={{ x: 1000, y: "calc(100vh )" }}
@@ -726,7 +546,6 @@ export const Table: FC<IProps<any>> = (props) => {
             bordered
             columns={tableCode ? currentColumns?.current : copyColumns}
             rowKey={rowKey}
-            // columns={copyColumns}
             components={onMoveRow ? components : undefined}
             className={classes}
             scroll={{ x: 1000, y: "calc(100vh )" }}
@@ -783,8 +602,7 @@ export const Table: FC<IProps<any>> = (props) => {
         dynamicData={dynamicData}
         setDynamicData={setDynamicData}
         tableCode={tableCode}
-        onReload={onReload}
-        selectColData={selectColData}
+        onReload={onReloadById}
       />
     </>
   );
